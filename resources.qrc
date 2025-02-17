@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>svg/051-link_all.svg</file>
+        <file>svg/052-unlink.svg</file>
+        <file>svg/53-save.svg</file>
+        <file>svg/054-export.svg</file>
+        <file>svg/055-apply-nice-numbers.svg</file>
+        <file>svg/10_ticks.svg</file>
+        <file>svg/abs_time_axis.svg</file>
+        <file>svg/OpM_rename.svg</file>
+        <file>svg/cut.svg</file>
+        <file>svg/cut_red.svg</file>
+        <file>svg/abs_time_axis_red.svg</file>
+        <file>svg/import.svg</file>
+        <file>svg/scale_X.svg</file>
+        <file>svg/scale_X_Y.svg</file>
+        <file>svg/scale_Y.svg</file>
+        <file>svg/mouse.svg</file>
+        <file>svg/helpicon.svg</file>
+        <file>svg/callouts.svg</file>
+        <file>svg/settings.svg</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>900</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>100</width>
+    <height>100</height>
+   </size>
+  </property>
+  <property name="font">
+   <font>
+    <family>Franklin Gothic Book</family>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>LabAssistant v2.0.22 alpha</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="cursor">
+       <cursorShape>ArrowCursor</cursorShape>
+      </property>
+      <property name="acceptDrops">
+       <bool>true</bool>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+      <property name="movable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Tab 1</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="View" name="graphicsView"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>40</width>
+     <height>40</height>
+    </size>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionImport_files"/>
+   <addaction name="action_Save"/>
+   <addaction name="separator"/>
+   <addaction name="actionDataManagerDialog"/>
+   <addaction name="actionToggle_scale_axis"/>
+   <addaction name="actionApply_nice_numbers"/>
+   <addaction name="action10_tiks_on_each_axis"/>
+   <addaction name="actionChangeOpMNames"/>
+   <addaction name="separator"/>
+   <addaction name="action_Link_all_charts_axes"/>
+   <addaction name="separator"/>
+   <addaction name="actionCut"/>
+   <addaction name="actionRescale_X"/>
+   <addaction name="actionRescale_Y"/>
+   <addaction name="actionRescale_X_Y"/>
+   <addaction name="separator"/>
+   <addaction name="actiontogglecallouts"/>
+   <addaction name="actionsetZeroX"/>
+   <addaction name="separator"/>
+   <addaction name="actionhelp"/>
+  </widget>
+  <action name="action_Save">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/054-export.svg</normaloff>:/icons/svg/054-export.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save current view as PNG picture</string>
+   </property>
+  </action>
+  <action name="actionToggle_scale_axis">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/abs_time_axis.svg</normaloff>
+     <normalon>:/icons/svg/abs_time_axis_red.svg</normalon>:/icons/svg/abs_time_axis.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Toggle scale axis</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle the relative axis&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="actionApply_nice_numbers">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/055-apply-nice-numbers.svg</normaloff>:/icons/svg/055-apply-nice-numbers.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Apply nice numbers</string>
+   </property>
+  </action>
+  <action name="actionChangeOpMNames">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/OpM_rename.svg</normaloff>:/icons/svg/OpM_rename.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Change OpM Names</string>
+   </property>
+  </action>
+  <action name="action_Link_all_charts_axes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/051-link_all.svg</normaloff>
+     <normalon>:/icons/svg/052-unlink.svg</normalon>
+     <selectedon>:/icons/svg/052-unlink.svg</selectedon>:/icons/svg/051-link_all.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Link all charts axes</string>
+   </property>
+  </action>
+  <action name="action10_tiks_on_each_axis">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/10_ticks.svg</normaloff>:/icons/svg/10_ticks.svg</iconset>
+   </property>
+   <property name="text">
+    <string>10 tiks on each axis!</string>
+   </property>
+   <property name="toolTip">
+    <string>10 tiks on each axis!</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/cut.svg</normaloff>
+     <normalon>:/icons/svg/cut_red.svg</normalon>:/icons/svg/cut.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut selection from chart</string>
+   </property>
+  </action>
+  <action name="actionRescale_X">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/scale_X.svg</normaloff>:/icons/svg/scale_X.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Rescale_X</string>
+   </property>
+   <property name="toolTip">
+    <string>Rescale the X-axis</string>
+   </property>
+  </action>
+  <action name="actionRescale_Y">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/scale_Y.svg</normaloff>:/icons/svg/scale_Y.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Rescale_Y</string>
+   </property>
+   <property name="toolTip">
+    <string>Rescale the Y-axis</string>
+   </property>
+  </action>
+  <action name="actionRescale_X_Y">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/scale_X_Y.svg</normaloff>:/icons/svg/scale_X_Y.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Rescale_X_Y</string>
+   </property>
+   <property name="toolTip">
+    <string>Rescale both the X and Y axes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionImport_files">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/import.svg</normaloff>:/icons/svg/import.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Import files</string>
+   </property>
+   <property name="toolTip">
+    <string>Import files</string>
+   </property>
+  </action>
+  <action name="actionhelp">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/helpicon.svg</normaloff>:/icons/svg/helpicon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>help</string>
+   </property>
+   <property name="toolTip">
+    <string>Show help page</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actiontogglecallouts">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/callouts.svg</normaloff>:/icons/svg/callouts.svg</iconset>
+   </property>
+   <property name="text">
+    <string>togglecallouts</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle all callouts</string>
+   </property>
+  </action>
+  <action name="actionDataManagerDialog">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/svg/settings.svg</normaloff>:/icons/svg/settings.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show DataManager dialog</string>
+   </property>
+   <property name="toolTip">
+    <string>Show DataManager dialog</string>
+   </property>
+  </action>
+  <action name="actionsetZeroX">
+   <property name="text">
+    <string>setZeroX</string>
+   </property>
+   <property name="toolTip">
+    <string>Set the zero on X axis at current chart left</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>View</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">view.h</header>
+   <slots>
+    <slot>toggleScaleAxis()</slot>
+    <slot>exportAction()</slot>
+    <slot>applyNiceNumbers()</slot>
+    <slot>actionTitleEdit()</slot>
+    <slot>actionOpmEdit()</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionToggle_scale_axis</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>current_ScaleAxis(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionApply_nice_numbers</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>current_NiceNumbers()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionChangeOpMNames</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>current_ChangeOpMNames()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Link_all_charts_axes</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>axes_link(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Save</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>current_NamedSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action10_tiks_on_each_axis</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>tenTicks()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCut</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCutMode(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRescale_X</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>rescale_chart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRescale_Y</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>rescale_chart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRescale_X_Y</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>rescale_chart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionImport_files</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>importFiles()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionhelp</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>help()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>599</x>
+     <y>449</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actiontogglecallouts</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>toggleCallouts()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>599</x>
+     <y>449</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>test_action()</slot>
+  <slot>current_NiceNumbers()</slot>
+  <slot>current_ScaleAxis(bool)</slot>
+  <slot>current_NamedSave()</slot>
+  <slot>current_ChangeOpMNames()</slot>
+  <slot>axes_link(bool)</slot>
+  <slot>tenTicks()</slot>
+  <slot>setCutMode(bool)</slot>
+  <slot>rescale_X()</slot>
+  <slot>rescale_Y()</slot>
+  <slot>rescale_X_Y()</slot>
+  <slot>importFiles()</slot>
+  <slot>rescale_chart()</slot>
+  <slot>help()</slot>
+  <slot>toggleCallouts()</slot>
+ </slots>
+</ui>

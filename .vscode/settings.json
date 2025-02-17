@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "qchartglobal": "cpp",
+        "sstream": "cpp"
+    }
+}

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="130"
+   height="130"
+   style=""
+   version="1.1"
+   id="svg132"
+   sodipodi:docname="abs_time_axis.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata138">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs136">
+    <rect
+       x="103.60362"
+       y="91.275006"
+       width="86.516594"
+       height="54.072871"
+       id="rect991" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview134"
+     showgrid="false"
+     inkscape:zoom="4.6233905"
+     inkscape:cx="52.041641"
+     inkscape:cy="68.188035"
+     inkscape:window-x="-8"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg132"
+     inkscape:document-rotation="0"
+     inkscape:snap-global="false"
+     inkscape:lockguides="true" />
+  <rect
+     id="backgroundrect"
+     width="100%"
+     height="100%"
+     x="0"
+     y="0"
+     fill="none"
+     stroke="none" />
+  <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+  <g
+     id="g111"
+     style="">
+    <title
+       id="title106">background</title>
+    <rect
+       x="-1"
+       y="-1"
+       width="132"
+       height="132"
+       id="canvas_background"
+       fill="#f0f0f0" />
+    <g
+       id="canvasGrid"
+       display="none">
+      <rect
+         id="svg_1"
+         width="100%"
+         height="100%"
+         x="0"
+         y="0"
+         stroke-width="0"
+          />
+    </g>
+  </g>
+  <g
+     stroke="null"
+     style=""
+     class="currentLayer"
+     id="g130">
+    <title
+       stroke="null"
+       transform="translate(3.1640799045562744,126.48587799072266) scale(1.0332609415054321,1.03335440158844) translate(-3.1640799045562744,-126.48587799072266) translate(123.32359313964844,2.4789817333221436) scale(1.0160951614379883,1.0188287496566772) translate(-123.32359313964844,-2.4789817333221436) translate(1.1087557077407837,122.35737609863281) scale(1.0052800178527832,1.007920265197754) translate(-1.1087557077407837,-122.35737609863281) "
+       id="title113">Layer 1</title>
+    <polygon
+       stroke="#000000"
+       fill="none"
+       stroke-width="2.16661"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       points="9.6280984,1.5616735 9.6280984,120.3296 128.09212,120.3296 9.6280984,120.3296 "
+       id="svg_4"
+       transform="matrix(0.99277381,0,0,0.85833054,0.00800499,0.2219286)" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="M 1.16407,103.36843 H 9.6245 Z"
+       id="svg_5" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="M 1.16407,86.39823 H 9.6245 Z"
+       id="svg_6" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="M 1.16407,69.43345 H 9.6245 Z"
+       id="svg_7" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="M 1.16407,52.46325 H 9.6245 Z"
+       id="svg_8" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="M 1.16407,35.49666 H 9.6245 Z"
+       id="svg_9" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="M 1.16407,18.53007 H 9.6245 Z"
+       id="svg_10" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="m 26.55077,128.81922 v -8.4824 z"
+       id="svg_11" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="m 43.46982,128.81922 v -8.4824 z"
+       id="svg_12" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="m 60.39428,128.81922 v -8.4824 z"
+       id="svg_13" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="m 77.31694,128.81922 v -8.4824 z"
+       id="svg_14" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="m 94.2414,128.81922 v -8.4824 z"
+       id="svg_15" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="m 111.16765,128.81922 v -8.4824 z"
+       id="svg_16" />
+    <path
+       stroke="#000000"
+       fill="none"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-miterlimit="10"
+       d="m 26.305882,112.21767 v -8.4824 z"
+       id="svg_11-3" />
+  </g>
+  <polygon
+     stroke="#000000"
+     fill="none"
+     stroke-width="2.11468"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-miterlimit="10"
+     points="9.6280984,120.3296 9.6280984,1.5616735 9.6280984,120.3296 128.09212,120.3296 "
+     id="svg_4-4"
+     transform="matrix(0.9915196,0,0,0.90213242,-0.10828088,11.530445)" />
+  <path
+     stroke="#000000"
+     fill="none"
+     stroke-width="2"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-miterlimit="10"
+     d="m 43.435294,112.52355 v -8.4824 z"
+     id="svg_12-9" />
+  <path
+     stroke="#000000"
+     fill="none"
+     stroke-width="2"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-miterlimit="10"
+     d="m 60.345324,112.60323 v -8.4824 z"
+     id="svg_12-9-1" />
+  <path
+     stroke="#000000"
+     fill="none"
+     stroke-width="2"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-miterlimit="10"
+     d="m 76.999769,112.60323 v -8.4824 z"
+     id="svg_12-9-1-4" />
+  <path
+     stroke="#000000"
+     fill="none"
+     stroke-width="2"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-miterlimit="10"
+     d="m 94.194942,112.49509 v -8.4824 z"
+     id="svg_12-9-1-4-5" />
+  <path
+     stroke="#000000"
+     fill="none"
+     stroke-width="2"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     stroke-miterlimit="10"
+     d="m 111.06568,113.25211 v -8.4824 z"
+     id="svg_12-9-1-4-2" />
+  <text
+     xml:space="preserve"
+     style="font-size:35.0387px;line-height:1.25;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';text-align:start;text-anchor:start;stroke-width:1.11393"
+     x="14.558221"
+     y="26.638224"
+     id="text979"
+     transform="scale(0.93393451,1.0707389)"><tspan
+       sodipodi:role="line"
+       id="tspan1612"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:34.6667px;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+       x="14.558221"
+       y="26.638224">Absolute</tspan></text>
+  <text
+     xml:space="preserve"
+     id="text989"
+     style="line-height:1.25;font-family:'Franklin Gothic Book';font-size:21.33333333px;-inkscape-font-specification:'Franklin Gothic Book, Normal';white-space:pre;shape-inside:url(#rect991);" />
+  <text
+     xml:space="preserve"
+     style="font-size:37.0064px;line-height:1.25;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';stroke-width:1.17649;"
+     x="37.146511"
+     y="63.152729"
+     id="text979-7"
+     transform="scale(0.94625186,1.0568011)"><tspan
+       sodipodi:role="line"
+       id="tspan1614">Time</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:36.8137px;line-height:1.25;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';stroke-width:1.17036"
+     x="39.571461"
+     y="96.682816"
+     id="text979-7-3"
+     transform="scale(0.98964211,1.0104663)"><tspan
+       sodipodi:role="line"
+       id="tspan1616"
+       x="39.571461"
+       y="96.682816">Axis</tspan></text>
+</svg>

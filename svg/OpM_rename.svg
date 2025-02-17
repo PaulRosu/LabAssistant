@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="130"
+   height="130"
+   style=""
+   version="1.1"
+   id="svg132"
+   sodipodi:docname="OpM_rename.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata138">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs136" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview134"
+     showgrid="false"
+     inkscape:zoom="3.1828029"
+     inkscape:cx="-1.9678087"
+     inkscape:cy="38.162267"
+     inkscape:window-x="-8"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg132"
+     inkscape:document-rotation="0"
+     inkscape:snap-text-baseline="true"
+     inkscape:snap-grids="true" />
+  <rect
+     id="backgroundrect"
+     width="100%"
+     height="100%"
+     x="0"
+     y="0"
+     fill="none"
+     stroke="none" />
+  <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+  <g
+     style=""
+     id="g111">
+    <title
+       id="title106">background</title>
+    <rect
+       x="-1"
+       y="-1"
+       width="132"
+       height="132"
+       id="canvas_background"
+       fill="#f0f0f0" />
+    <g
+       id="canvasGrid"
+       display="none">
+      <rect
+         id="svg_1"
+         width="100%"
+         height="100%"
+         x="0"
+         y="0"
+         stroke-width="0"
+          />
+    </g>
+  </g>
+  <g
+     stroke="null"
+     class="currentLayer"
+     id="g130"
+     transform="matrix(0.9801129,0,0,1,2.5473809,0)">
+    <title
+       stroke="null"
+       transform="translate(3.1640799045562744,126.48587799072266) scale(1.0332609415054321,1.03335440158844) translate(-3.1640799045562744,-126.48587799072266) translate(123.32359313964844,2.4789817333221436) scale(1.0160951614379883,1.0188287496566772) translate(-123.32359313964844,-2.4789817333221436) translate(1.1087557077407837,122.35737609863281) scale(1.0052800178527832,1.007920265197754) translate(-1.1087557077407837,-122.35737609863281) "
+       id="title113">Layer 1</title>
+    <g
+       stroke="null"
+       id="svg_23"
+       class=""
+       transform="matrix(0.87128297,0,0,0.95555947,16.487637,5.7247943)">
+      <polygon
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         points="9.6280984,1.5616735 9.6280984,120.3296 128.09212,120.3296 9.6280984,120.3296 "
+         id="svg_4" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="M 1.16407,103.36843 H 9.6245 Z"
+         id="svg_5" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="M 1.16407,86.39823 H 9.6245 Z"
+         id="svg_6" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="M 1.16407,69.43345 H 9.6245 Z"
+         id="svg_7" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="M 1.16407,52.46325 H 9.6245 Z"
+         id="svg_8" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="M 1.16407,35.49666 H 9.6245 Z"
+         id="svg_9" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="M 1.16407,18.53007 H 9.6245 Z"
+         id="svg_10" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="m 26.55077,128.81922 v -8.4824 z"
+         id="svg_11" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="m 43.46982,128.81922 v -8.4824 z"
+         id="svg_12" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="m 60.39428,128.81922 v -8.4824 z"
+         id="svg_13" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="m 77.31694,128.81922 v -8.4824 z"
+         id="svg_14" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="m 94.2414,128.81922 v -8.4824 z"
+         id="svg_15" />
+      <path
+         stroke="#000000"
+         fill="none"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         stroke-miterlimit="10"
+         d="m 111.16765,128.81922 v -8.4824 z"
+         id="svg_16" />
+    </g>
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:46.936px;line-height:1.25;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill-rule:nonzero;stroke-width:21.5546;stroke-miterlimit:4;stroke-dasharray:none"
+     x="34.441101"
+     y="51.848408"
+     id="text2211"
+     transform="scale(0.99655342,1.0034585)"><tspan
+       sodipodi:role="line"
+       id="tspan2209"
+       x="34.441101"
+       y="51.848408"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:46.936px;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill-rule:nonzero;stroke-width:21.5546;stroke-miterlimit:4;stroke-dasharray:none"
+       dy="0 0">OpM</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.0188px;line-height:1.25;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:2.05591"
+     x="36.091228"
+     y="85.598251"
+     id="text2215"
+     transform="scale(0.84416859,1.1845975)"><tspan
+       sodipodi:role="line"
+       id="tspan2213"
+       x="36.091228"
+       y="85.598251"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.0188px;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:2.05591">name</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;line-height:1.25;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.730798"
+     x="-1.7498488"
+     y="88.286751"
+     id="text2219"
+     transform="scale(0.9329514,1.0718672)"><tspan
+       sodipodi:role="line"
+       id="tspan2217"
+       x="-1.7498488"
+       y="88.286751"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.730798">IIa</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;line-height:1.25;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.730798"
+     x="-2.4316795"
+     y="57.561668"
+     id="text2219-4"
+     transform="scale(0.9329514,1.0718672)"><tspan
+       sodipodi:role="line"
+       id="tspan2217-1"
+       x="-2.4316795"
+       y="57.561668"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.730798">IIb</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:21.3333px;line-height:1.25;font-family:'Franklin Gothic Book';-inkscape-font-specification:'Franklin Gothic Book, Normal';stroke-width:0.922079;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;"
+     x="-3.0621498"
+     y="27.623806"
+     id="text2219-3"
+     transform="scale(0.96384788,1.0375081)"><tspan
+       sodipodi:role="line"
+       id="tspan2217-8"
+       x="-3.0621498"
+       y="27.623806"
+       style="stroke-width:0.922079;-inkscape-font-specification:'Franklin Gothic Book, Normal';font-family:'Franklin Gothic Book';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:21.33333351px;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;">IIc</tspan></text>
+</svg>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="128"
+   height="128"
+   version="1.1"
+   id="svg871"
+   sodipodi:docname="53-save.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata877">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>icon/export-down</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs875" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview873"
+     showgrid="false"
+     inkscape:snap-bbox="false"
+     inkscape:snap-global="true"
+     inkscape:snap-center="true"
+     inkscape:zoom="4.5447954"
+     inkscape:cx="114.52388"
+     inkscape:cy="85.549774"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1095" />
+  <title
+     id="title856">icon/export-down</title>
+  <desc
+     id="desc858">Created with Sketch.</desc>
+  <g
+     id="g863">
+    <title
+       id="title860">background</title>
+    <rect
+       fill="#f0f0f0"
+       id="canvas_background"
+       height="130"
+       width="130"
+       y="-1"
+       x="-1" />
+  </g>
+  <g
+     id="g1095"
+     transform="translate(52.900759,60.626226)">
+    <g
+       stroke="none"
+       stroke-width="1"
+       fill="none"
+       fill-rule="evenodd"
+       id="g1077"
+       transform="matrix(6.5545636,0,0,6.2652322,-64.27824,-84.339475)">
+      <path
+         d="M 11,22.292893 V 9.5 C 11,9.2238576 11.223858,9 11.5,9 11.776142,9 12,9.2238576 12,9.5 v 12.792893 l 3.146447,-3.146446 c 0.195262,-0.195263 0.511844,-0.195263 0.707106,0 0.195262,0.195262 0.195262,0.511844 0,0.707106 l -4,4 c -0.195262,0.195262 -0.511844,0.195262 -0.707106,0 l -4.0000004,-4 c -0.1952621,-0.195262 -0.1952621,-0.511844 0,-0.707106 0.1952622,-0.195263 0.5118446,-0.195263 0.7071068,0 z M 3,15 H 8.5 C 8.7761424,15 9,15.223858 9,15.5 9,15.776142 8.7761424,16 8.5,16 h -6 C 2.2238576,16 2,15.776142 2,15.5 V 4.5 C 2,4.2238576 2.2238576,4 2.5,4 h 18 C 20.776142,4 21,4.2238576 21,4.5 v 11 c 0,0.276142 -0.223858,0.5 -0.5,0.5 h -6 C 14.223858,16 14,15.776142 14,15.5 14,15.223858 14.223858,15 14.5,15 H 20 V 5 H 3 Z"
+         fill="#000000"
+         fill-rule="nonzero"
+         id="path1075" />
+    </g>
+  </g>
+</svg>
