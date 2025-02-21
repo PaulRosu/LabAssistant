@@ -1383,8 +1383,8 @@ void findInterestPoints(std::shared_ptr<MeasSpecimen> specimen,
 
 
   // the contact values are 8bit binary format
-  qDebug() << specimen->name << " ElContactSize:" << specimen->contact1.size();
-  qDebug() << "all points:" << specimen->contact1;
+  // qDebug() << specimen->name << " ElContactSize:" << specimen->contact1.size();
+  // qDebug() << "all points:" << specimen->contact1;
 
   if (specimen->contact1.size() > 10) {
 
