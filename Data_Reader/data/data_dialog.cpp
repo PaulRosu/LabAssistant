@@ -478,7 +478,7 @@ void data_Dialog::hideEmptySeries()
   // hide all rows in ui->seriesTable that have the column 2 empty
   for (int i = 0; i < ui->seriesTable->rowCount(); i++)
   {
-    if (ui->seriesTable->item(i, 2)->text().isEmpty())
+    if (ui->seriesTable->item(i, 2) && ui->seriesTable->item(i, 2)->text().isEmpty())
     {
       ui->seriesTable->hideRow(i);
     }
@@ -1152,24 +1152,69 @@ void data_Dialog::resizeTreeWidgetColumns()
   }
 }
 
-QTreeWidgetItem *data_Dialog::insertSysVar(QString name, bool checked)
+// Restored original implementation for SysVars
+QTreeWidgetItem *data_Dialog::insertSysVar(QString SysVarString, bool checked) {
+  auto parent = getRootItem("SysVar");
+  auto SysVar = splitSysvarName(SysVarString);
+  SysVar.takeFirst();
+
+  // qDebug() << "data_Dialog::insertSysVar" << SysVar;
+
+  QTreeWidgetItem *currentParent = parent;
+  QTreeWidgetItem *lastItem = nullptr;
+
+  for (const QString &value : SysVar) {
+    bool itemFound = false;
+
+    // Iterate through child items to find the matching node.
+    for (int i = 0; i < currentParent->childCount(); ++i) {
+      QTreeWidgetItem *child = currentParent->child(i);
+      if (child->text(0) == value) {
+        currentParent = child;
+        lastItem = child;
+        itemFound = true;
+        break;
+      }
+    }
+
+    // If the item is not found, create and insert it.
+    if (!itemFound) {
+      // qDebug() << "insertSysVar inserting new sysvar in tree!";
+      QTreeWidgetItem *newItem = new QTreeWidgetItem();
+      newItem->setText(0, value);
+      newItem->setCheckState(0, (checked ? Qt::Checked : Qt::Unchecked));
+      newItem->setData(0, Qt::UserRole + 1, QVariant::fromValue(SysVarString));
+      newItem->setData(0, Qt::UserRole + 2, QVariant::fromValue(2));
+
+      currentParent->addChild(newItem);
+      currentParent = newItem;
+      lastItem = newItem;
+    }
+  }
+  
+  return lastItem;
+}
+
+// New function for CSV variables
+QTreeWidgetItem *data_Dialog::insertCSVVar(QString name, bool checked)
 {
-  QTreeWidgetItem *root = getRootItem("SysVar");
+  QTreeWidgetItem *root = getRootItem("CSV");
   if (!root)
   {
     root = new QTreeWidgetItem(ui->treeWidget);
-    root->setText(0, "SysVar");
+    root->setText(0, "CSV");
     root->setFlags(root->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsAutoTristate);
     root->setCheckState(0, Qt::Unchecked);
   }
 
   QTreeWidgetItem *item = new QTreeWidgetItem(root);
-  item->setText(0, name.replace("SysVar", ""));
+  item->setText(0, name.replace("CSV::", ""));
   item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
   item->setCheckState(0, checked ? Qt::Checked : Qt::Unchecked);
 
   // Add the same data as in the original implementation
-  item->setData(0, Qt::UserRole + 1, QVariant::fromValue(name));
+  QString fullName = "CSV::" + item->text(0);
+  item->setData(0, Qt::UserRole + 1, QVariant::fromValue(fullName));
   item->setData(0, Qt::UserRole + 2, QVariant::fromValue(2));
 
   return item;

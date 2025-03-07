@@ -43,6 +43,7 @@ public:
 
   void insertMessage(BusMessage &message);
   QTreeWidgetItem* insertSysVar(QString name, bool checked);
+  QTreeWidgetItem* insertCSVVar(QString name, bool checked);
   void insertSerie(const QString &source, const QString &name, int count,
                    double factor = 1, double offset = 0);
   void hideEmptySeries();

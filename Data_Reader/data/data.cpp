@@ -713,8 +713,7 @@ void Data::processParsedSysVars() {
   auto processBranch = [&](const QString &branch) {
     QString varRealName = branch;
     varRealName.replace("SysVar", "");
-    // qDebug() << "entry" << branch <<
-    // SysVars->value(varRealName).points->count();
+    qDebug() << "varRealName" << varRealName;
 
     if ((SysVars->value(varRealName).checked) &&
         (SysVars->value(varRealName).points.count() > 0)) {
@@ -722,8 +721,8 @@ void Data::processParsedSysVars() {
           this->DataManager->ui->seriesTable, 9, branch);
       // qDebug() << "foundRow" << foundRow;
       if (foundRow > -1) {
-        auto itemText =
-            this->DataManager->ui->seriesTable->item(foundRow, 10)->text();
+        QTableWidgetItem* item = this->DataManager->getOrCreateItem(foundRow, 10);
+        auto itemText = item ? item->text() : "";
         if (itemText.isEmpty()) {
           this->DataManager->insertSerie(
               fi.filePath(), branch,
@@ -765,8 +764,8 @@ void Data::processParsedMessages() {
     // foundRow;
 
     if (foundRow >= 0) {
-      auto itemText =
-          this->DataManager->ui->seriesTable->item(foundRow, 10)->text();
+      QTableWidgetItem* item = this->DataManager->getOrCreateItem(foundRow, 10);
+      auto itemText = item ? item->text() : "";
       // qDebug() << "itemText" << itemText << itemText.isEmpty();
 
       if (itemText.isEmpty()) {
@@ -876,13 +875,11 @@ void Data::CsvParsingComplete() {
     }
     
     // Clear existing CSV items from tree
-    auto root = this->DataManager->getRootItem("SysVar");
+    auto root = this->DataManager->getRootItem("CSV");
     if (root) {
         for (int i = root->childCount() - 1; i >= 0; --i) {
             QTreeWidgetItem* child = root->child(i);
-            if (child->text(0).startsWith("CSV::")) {
-                delete root->takeChild(i);
-            }
+            delete root->takeChild(i);
         }
     }
     
@@ -899,11 +896,10 @@ void Data::CsvParsingComplete() {
         SysVars->insert(varName, serie);
         
         // Add to UI tree with the correct check state
-        QString sysVarString = "SysVar" + varName;
-        QTreeWidgetItem* item = this->DataManager->insertSysVar(sysVarString, isChecked);
+        QTreeWidgetItem* item = this->DataManager->insertCSVVar(it.key(), isChecked);
         if (item) {
             item->setCheckState(0, isChecked ? Qt::Checked : Qt::Unchecked);
-            qDebug() << "Inserting" << sysVarString << "with check state:" << isChecked;
+            qDebug() << "Inserting" << varName << "with check state:" << isChecked;
             
             if (isChecked) {
                 checkedColumns.append(varName);
@@ -912,7 +908,7 @@ void Data::CsvParsingComplete() {
     }
     
     // Update parent states in tree
-    root = this->DataManager->getRootItem("SysVar");
+    root = this->DataManager->getRootItem("CSV");
     if (root) {
         updateParentState(root);
     }
@@ -1102,44 +1098,76 @@ void Data::copySettingsToDataManager(QSettings* source) {
 }
 
 void Data::synchronizeTreeStates() {
-    auto root = this->DataManager->getRootItem("SysVar");
-    if (!root) return;
-    
-    qDebug() << "Synchronizing tree states...";
-    
-    // Function to recursively update tree items
-    std::function<void(QTreeWidgetItem*)> updateTreeItem;
-    updateTreeItem = [this, &updateTreeItem](QTreeWidgetItem* item) {
-        if (!item) return;
+    // Synchronize SysVar tree
+    auto sysVarRoot = this->DataManager->getRootItem("SysVar");
+    if (sysVarRoot) {
+        qDebug() << "Synchronizing SysVar tree states...";
         
-        // Get the full path for this item
-        QString itemPath;
-        QTreeWidgetItem* current = item;
-        while (current) {
-            itemPath = current->text(0) + (itemPath.isEmpty() ? "" : "::" + itemPath);
-            current = current->parent();
-        }
-        
-        // If this is a leaf node (CSV variable)
-        if (item->childCount() == 0 && itemPath.contains("CSV::")) {
-            QString varName = itemPath;
-            varName.replace("SysVar", "");
-            if (SysVars->contains(varName)) {
-                bool checked = SysVars->value(varName).checked;
-                item->setCheckState(0, checked ? Qt::Checked : Qt::Unchecked);
-                qDebug() << "Setting tree item state for" << varName << "to" << checked;
+        // Function to recursively update tree items
+        std::function<void(QTreeWidgetItem*)> updateSysVarTreeItem;
+        updateSysVarTreeItem = [this, &updateSysVarTreeItem](QTreeWidgetItem* item) {
+            if (!item) return;
+            
+            // Get the full path for this item
+            QString itemPath;
+            QTreeWidgetItem* current = item;
+            while (current) {
+                itemPath = current->text(0) + (itemPath.isEmpty() ? "" : "::" + itemPath);
+                current = current->parent();
             }
-        }
+            
+            // If this is a leaf node (SysVar variable)
+            if (item->childCount() == 0) {
+                QString varName = itemPath;
+                varName.replace("SysVar", "");
+                if (SysVars->contains(varName) && !varName.startsWith("CSV::")) {
+                    bool checked = SysVars->value(varName).checked;
+                    item->setCheckState(0, checked ? Qt::Checked : Qt::Unchecked);
+                    qDebug() << "Setting SysVar tree item state for" << varName << "to" << checked;
+                }
+            }
+            
+            // Process children
+            for (int i = 0; i < item->childCount(); ++i) {
+                updateSysVarTreeItem(item->child(i));
+            }
+        };
         
-        // Process children
-        for (int i = 0; i < item->childCount(); ++i) {
-            updateTreeItem(item->child(i));
-        }
-    };
+        this->DataManager->ui->treeWidget->blockSignals(true);
+        updateSysVarTreeItem(sysVarRoot);
+        updateParentState(sysVarRoot);
+    }
     
-    this->DataManager->ui->treeWidget->blockSignals(true);
-    updateTreeItem(root);
-    updateParentState(root);
+    // Synchronize CSV tree
+    auto csvRoot = this->DataManager->getRootItem("CSV");
+    if (csvRoot) {
+        qDebug() << "Synchronizing CSV tree states...";
+        
+        // Function to recursively update tree items
+        std::function<void(QTreeWidgetItem*)> updateCSVTreeItem;
+        updateCSVTreeItem = [this, &updateCSVTreeItem](QTreeWidgetItem* item) {
+            if (!item) return;
+            
+            // If this is a leaf node (CSV variable)
+            if (item->childCount() == 0) {
+                QString varName = "CSV::" + item->text(0);
+                if (SysVars->contains(varName)) {
+                    bool checked = SysVars->value(varName).checked;
+                    item->setCheckState(0, checked ? Qt::Checked : Qt::Unchecked);
+                    qDebug() << "Setting CSV tree item state for" << varName << "to" << checked;
+                }
+            }
+            
+            // Process children
+            for (int i = 0; i < item->childCount(); ++i) {
+                updateCSVTreeItem(item->child(i));
+            }
+        };
+        
+        updateCSVTreeItem(csvRoot);
+        updateParentState(csvRoot);
+    }
+    
     this->DataManager->ui->treeWidget->blockSignals(false);
 }
 

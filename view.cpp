@@ -5,8 +5,7 @@
 
 #include "view.h"
 #include "ui_data_dialog.h"
-#include "view_utilities.h"  // Changed from view_utilities.cpp
-// #include  "view_utilities.cpp"
+#include "view_utilities.h" 
 #include <cmath>
 
 #include <QtCharts/QChartGlobal>
@@ -357,7 +356,7 @@ void View::checkAndCreateIniFileWithUUID(const QString &UUID) {
 
   foreach (QFileInfo fileInfo, fileList) {
     QSettings settings(fileInfo.absoluteFilePath(), QSettings::IniFormat);
-    if (settings.value("blockUUID").toString() == UUID) {
+    if (settings.value("blockUUID").toString() == UUID && UUID != "") {
       qDebug() << "remote settings found in" << fileInfo.fileName()
                << fileInfo.absoluteFilePath();
       templateSettingsFound = true;
@@ -526,12 +525,12 @@ void View::constructDataChart() {
   // qDebug() << this->data.DBC->keys ();
 
   for (int row = 0; row < seriesTable->rowCount(); row++) {
-    qDebug() << seriesTable->item(row, 0)->checkState()
-             << seriesTable->item(row, 2)->text()
-             << seriesTable->item(row, 3)->text();
+    // qDebug() << seriesTable->item(row, 0)->checkState()
+    //          << seriesTable->item(row, 2)->text()
+    //          << seriesTable->item(row, 3)->text();
 
     if (seriesTable->item(row, 0)->checkState() &&
-        (seriesTable->item(row, 2)->text().toInt() > 0)) {
+        ((seriesTable->item(row, 2) ? seriesTable->item(row, 2)->text().toInt() > 0: false))) {
       auto yAxisName = seriesTable->item(row, 4)->text();
 
       if (yAxisName == "none") {

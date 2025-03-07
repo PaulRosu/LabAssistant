@@ -4,42 +4,50 @@
 #include <QtCore>
 class DataSerie
 {
-  public:
+public:
   QList<QPointF> points;
   bool checked;
   QString name;
   QString source;
   double minX, minY, maxX, maxY;
   static const double secondsInADay;
-  double offset              = -1.0;
+  double offset = -1.0;
+  QHash<QString, double> operatingModes;
+  bool isOperatingModeSeries = false; 
 
-  // Constructor
   DataSerie() : checked(false)
   {
-      points = *new QList<QPointF>;
-      //        points->reserve(100000);
-    }
+    points = *new QList<QPointF>;
+  }
 
-    void addPoint(QPointF point)
-    {
+  void addPoint(QPointF point)
+  {
+    points.append(point);
+  }
 
-      points.append(point);
-    }
+    void addOperatingModePoint(const QString& modeName, double timestamp)
+  {
+      if (!operatingModes.contains(modeName)) {
+          operatingModes[modeName] = operatingModes.size();
+      }
+      points.append(QPointF(timestamp, operatingModes[modeName]));
+  }
 
-    void clear()
-    {
-        points.clear();
-        points.squeeze();
-    }
+  void clear()
+  {
+    points.clear();
+    points.squeeze();
+    operatingModes.clear(); 
+  }
 };
 
 class DataCollection
 {
-  private:
-    QList<DataSerie> series;
-    QHash<unsigned int, BusMessage> *DBC;
+private:
+  QList<DataSerie> series;
+  QHash<unsigned int, BusMessage> *DBC;
 
-  public:
+public:
 };
 
 #endif // DATA_TYPES_H
