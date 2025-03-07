@@ -110,21 +110,21 @@ View::View(QWidget *parent, QString s_path)
 
   else if (serieName.contains(".csv", Qt::CaseInsensitive)) {
 
-    if (isGraphtec(path)) {
+    // if (isGraphtec(path)) {
 
-      qDebug() << "graphtec file dropped!";
-    } else if (isIllum(path)) {
+    //   qDebug() << "graphtec file dropped!";
+    // } else if (isIllum(path)) {
 
-      qDebug() << "Illum file dropped!";
+    //   qDebug() << "Illum file dropped!";
 
-    } else {
+    // } else {
 
-      construct_MFU_chart(path);
-    }
+    //   construct_MFU_chart(path);
+    // }
 
   
   
-  /*   // test the new csv parser
+   // test the new csv parser
   qDebug() << "CSV file dropped: using new CSV parser";
 
     // Disconnect existing connections to prevent duplicates
@@ -157,7 +157,7 @@ View::View(QWidget *parent, QString s_path)
     m_coordY->hide();
 
   
-    */
+    
   
   } else if (serieName.contains(".blf")) {
 

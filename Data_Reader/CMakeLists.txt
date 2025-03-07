@@ -26,7 +26,7 @@ set(DATA_READER_FORMS
 )
 
 set(DATA_READER_RESOURCES
-    datamanagerresources.qrc
+    "${CMAKE_CURRENT_SOURCE_DIR}/datamanagerresources.qrc"
 )
 
 add_library(Data_Reader STATIC
@@ -36,6 +36,11 @@ add_library(Data_Reader STATIC
     ${DATA_READER_RESOURCES}
 )
 
+set_target_properties(Data_Reader PROPERTIES
+    AUTOMOC ON
+    AUTORCC ON
+    AUTOUIC ON
+)
 
 target_link_libraries(Data_Reader PRIVATE
     Qt6::Core

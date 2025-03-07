@@ -20,4 +20,11 @@
         <file>svg/callouts.svg</file>
         <file>svg/settings.svg</file>
     </qresource>
+        <qresource prefix="/images">
+        <file>png/stylesheet-branch-closed.png</file>
+        <file>png/stylesheet-branch-open.png</file>
+        <file>png/stylesheet-branch-end.png</file>
+        <file>png/stylesheet-branch-more.png</file>
+        <file>png/stylesheet-vline.png</file>
+    </qresource>
 </RCC>

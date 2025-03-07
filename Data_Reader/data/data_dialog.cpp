@@ -49,25 +49,39 @@ data_Dialog::data_Dialog(QWidget *parent)
 
   // set treeWidget stylesheet
   {
+    // Debug resource loading
+    QFile file(":/images/png/stylesheet-vline.png");
+    if (file.exists()) {
+      qDebug() << "Resource file found: :/images/png/stylesheet-vline.png";
+    } else {
+      qDebug() << "ERROR: Resource file not found: :/images/png/stylesheet-vline.png";
+      // List all available resources
+      qDebug() << "Available resources:";
+      QDirIterator it(":", QDirIterator::Subdirectories);
+      while (it.hasNext()) {
+        qDebug() << it.next();
+      }
+    }
+    
     ui->treeWidget->setStyleSheet(
         "QTreeView::branch:has-siblings:!adjoins-item {"
-        "    border-image: url(:/images/stylesheet-vline.png) 0;"
+        "    border-image: url(:/images/png/stylesheet-vline.png) 0;"
         "}"
         "QTreeView::branch:has-siblings:adjoins-item {"
-        "    border-image: url(:/images/stylesheet-branch-more.png) 0;"
+        "    border-image: url(:/images/png/stylesheet-branch-more.png) 0;"
         "}"
         "QTreeView::branch:!has-children:!has-siblings:adjoins-item {"
-        "    border-image: url(:/images/stylesheet-branch-end.png) 0;"
+        "    border-image: url(:/images/png/stylesheet-branch-end.png) 0;"
         "}"
         "QTreeView::branch:has-children:!has-siblings:closed,"
         "    QTreeView::branch:closed:has-children:has-siblings {"
         "    border-image: none;"
-        "    image: url(:/images/stylesheet-branch-closed.png);"
+        "    image: url(:/images/png/stylesheet-branch-closed.png);"
         "}"
         "QTreeView::branch:open:has-children:!has-siblings,"
         "    QTreeView::branch:open:has-children:has-siblings  {"
         "    border-image: none;"
-        "    image: url(:/images/stylesheet-branch-open.png);"
+        "    image: url(:/images/png/stylesheet-branch-open.png);"
         "}");
   }
 
