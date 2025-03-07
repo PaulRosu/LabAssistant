@@ -1362,7 +1362,7 @@ void findInterestPoints(std::shared_ptr<MeasSpecimen> specimen,
 
   specimen->BMW_F3_row = 0;
   // *** find the travel at last up convex point + 1N, for BMW projects
-  if (!upconcave.isEmpty()) {
+  if (!upconcave.isEmpty() &&  !upconvexe.isEmpty()) {
     for (uint j = upconcave.last(); j < specimen->samples - 8; ++j) {
       if (j == (uint)maxForceLocation)
         break;
@@ -1380,11 +1380,16 @@ void findInterestPoints(std::shared_ptr<MeasSpecimen> specimen,
   bool sw_1_state = false;
   bool sw_2_state = false;
 
+
+
   // the contact values are 8bit binary format
-  qDebug() << specimen->name << " ElContactSize:" << specimen->contact1.size();
-  qDebug() << specimen->contact1;
+  // qDebug() << specimen->name << " ElContactSize:" << specimen->contact1.size();
+  // qDebug() << "all points:" << specimen->contact1;
 
   if (specimen->contact1.size() > 10) {
+
+      sw_1_state = (specimen->contact1.first() & 1) || (specimen->contact1.first() & 4);
+      sw_2_state = (specimen->contact1.first() & 2) || (specimen->contact1.first() & 8);
 
     for (uint l = 8; l < specimen->samples; l++) {
 

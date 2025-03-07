@@ -578,11 +578,11 @@ void hapticSerie::findHapticPoints() {
   // optimizare claudius
   while (abs(pVector.at(start).x()) < 0.05) {
     start--;
-    qDebug() << "optimizare claudius X=" << pVector.at(start).x()
-             << this->name();
+    // qDebug() << "optimizare claudius X=" << pVector.at(start).x()
+    //          << this->name();
   }
   end = start - 2;
-  qDebug() << "optimizare claudius end final:" << end << this->name();
+  // qDebug() << "optimizare claudius end final:" << end << this->name();
   //
 
   while (pVector.at(end).y() - pVector.at(start).y() < 0.2) {

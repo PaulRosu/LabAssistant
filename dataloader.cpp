@@ -2258,10 +2258,10 @@ void dataLoader::findHapticPoints() {
 
       //            }
 
-      qDebug() << " local convex" << pVector->at(l).y() << pVector->at(l).x()
-               << "backBound" << pVector->at(backBound).x() << "forwardBound"
-               << pVector->at(forwardBound).x() << "is_current_point_max"
-               << is_current_point_max;
+      // qDebug() << " local convex" << pVector->at(l).y() << pVector->at(l).x()
+      //          << "backBound" << pVector->at(backBound).x() << "forwardBound"
+      //          << pVector->at(forwardBound).x() << "is_current_point_max"
+      //          << is_current_point_max;
 
       if (is_current_point_max) {
 
@@ -2391,10 +2391,10 @@ void dataLoader::findHapticPoints() {
         }
       }
 
-      qDebug() << "local concav" << pVector->at(l).y() << pVector->at(l).x()
-               << "backBound" << pVector->at(backBound).x() << "forwardBound"
-               << pVector->at(forwardBound).x() << "is_current_point_max"
-               << is_current_point_min;
+      // qDebug() << "local concav" << pVector->at(l).y() << pVector->at(l).x()
+      //          << "backBound" << pVector->at(backBound).x() << "forwardBound"
+      //          << pVector->at(forwardBound).x() << "is_current_point_max"
+      //          << is_current_point_min;
 
       if (is_current_point_min) {
 

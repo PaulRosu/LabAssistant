@@ -29,7 +29,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>LabAssistant v2.0.22 alpha</string>
+   <string>LabAssistant v2.0.23 alpha</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="enabled">
@@ -300,7 +300,7 @@
     <string>Set the zero on X axis at current chart left</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
  </widget>

@@ -110,18 +110,21 @@ View::View(QWidget *parent, QString s_path)
 
   else if (serieName.contains(".csv", Qt::CaseInsensitive)) {
 
-    // if (isGraphtec(path)) {
+    if (isGraphtec(path)) {
 
-    //   qDebug() << "graphtec file dropped!";
-    // } else if (isIllum(path)) {
+      qDebug() << "graphtec file dropped!";
+    } else if (isIllum(path)) {
 
-    //   qDebug() << "Illum file dropped!";
+      qDebug() << "Illum file dropped!";
 
-    // } else {
+    } else {
 
-    //   construct_MFU_chart(path);
-    // }
+      construct_MFU_chart(path);
+    }
+
   
+  
+  /*   // test the new csv parser
   qDebug() << "CSV file dropped: using new CSV parser";
 
     // Disconnect existing connections to prevent duplicates
@@ -153,6 +156,8 @@ View::View(QWidget *parent, QString s_path)
     m_coordX->hide();
     m_coordY->hide();
 
+  
+    */
   
   } else if (serieName.contains(".blf")) {
 
@@ -6222,13 +6227,15 @@ void showStatistics(const QVector<QPointF> *serie, QString name) {
   }
   categoryAxis->setTitleText("Bin Range");
   categoryAxis->setTitleFont(labelFont);
-  chart->setAxisX(categoryAxis, series);
+  chart->addAxis(categoryAxis, Qt::AlignBottom);
+  series->attachAxis(categoryAxis);
 
   QValueAxis *axisY = new QValueAxis();
-  axisY->setRange(0, 100); // Assuming you want to show up to 100% for clarity
+  axisY->setRange(0, 100);
   axisY->setTitleText("Percentage (%)");
   axisY->setTitleFont(labelFont);
-  chart->setAxisY(axisY, series);
+  chart->addAxis(axisY, Qt::AlignLeft);
+  series->attachAxis(axisY);
 
   QChartView *chartView = new QChartView(chart);
   chartView->setMinimumSize(640, 480);
