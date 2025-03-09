@@ -85,6 +85,10 @@ add_compile_definitions(
     QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
 )
 
+# Option to disable debug output (equivalent to DEFINES += QT_NO_DEBUG_OUTPUT)
+add_compile_definitions(QT_NO_DEBUG_OUTPUT)
+
+
 # Ensure proper UI file handling
 set(CMAKE_AUTOUIC_SEARCH_PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}
