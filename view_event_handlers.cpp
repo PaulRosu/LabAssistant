@@ -1,5 +1,3 @@
-//make sure to only include this file once
-// #pragma once
 #include "view.h"
 // #include "view_utilities.cpp"
 
@@ -219,7 +217,7 @@ void View::handleSerieClick(QPointF point)
 void View::handleSerieRelease(QPointF point)
 {
     released_from_item  = true;
-  qDebug() << "Serie released:" << sender()->objectName () << point <<  m_chart->mapToPosition (point);
+    // qDebug() << "Serie released:" << sender()->objectName () << point <<  m_chart->mapToPosition (point);
 
     QPointF mappedPoint = m_chart->mapToPosition(point);
     QMouseEvent event(QEvent::MouseButtonRelease, mappedPoint, mappedPoint, mappedPoint, Qt::LeftButton, Qt::LeftButton,
@@ -1090,7 +1088,1365 @@ void View::mouseDoubleClickEvent(QMouseEvent *event)
 void View::actionShowDataManager()
 {
 
-    qDebug() << "void View::actionShowDataManager()";
+    // qDebug() << "void View::actionShowDataManager()";
 
     data.DataManager->show();
+}
+
+void View::applyNiceNumbers() {
+  // if ((axis_current != nullptr) and (axis_current->isVisible()))
+  //     axis_current->applyNiceNumbers();
+  // if ((axis_sleep_current != nullptr) and (axis_sleep_current->isVisible()))
+  //     axis_sleep_current->applyNiceNumbers();
+  // if ((axis_temperature != nullptr) and (axis_temperature->isVisible()))
+  //     axis_temperature->applyNiceNumbers();
+  // if ((axis_humidity != nullptr) and (axis_humidity->isVisible()))
+  //     axis_humidity->applyNiceNumbers();
+  // if ((axis_voltage != nullptr) and (axis_voltage->isVisible()))
+  //     axis_voltage->applyNiceNumbers();
+
+  // if (axis_travel != nullptr)
+  //     axis_travel->applyNiceNumbers();
+  // if (axis_force != nullptr)
+  //     axis_force->applyNiceNumbers();
+
+  // for (auto ax : m_chart->axes())
+  // {
+  //     QValueAxis *axis = qobject_cast<QValueAxis *>(ax);
+  //     if (axis->objectName() == "axis_HV_voltage")
+  //         axis->applyNiceNumbers();
+  //     if (axis->objectName() == "axis_HV_current")
+  //         axis->applyNiceNumbers();
+  // }
+
+  for (QAbstractAxis *axis : m_chart->axes()) {
+    if (axis->orientation() == Qt::Vertical) {
+      auto valueAxis = qobject_cast<QValueAxis *>(axis);
+      // if (valueAxis->isVisible())
+      valueAxis->applyNiceNumbers();
+    }
+  }
+
+  updateCallouts();
+  this->m_chart->update();
+  QApplication::processEvents();
+}
+
+void View::tenTicks() {
+  for (auto abstract_axis : m_chart->axes()) {
+    QValueAxis *axis = qobject_cast<QValueAxis *>(abstract_axis);
+    axis->setTickCount(11);
+  }
+  this->m_chart->update();
+  QApplication::processEvents();
+}
+
+void View::setScaleAxis(bool state) {
+  if (axisX2 != nullptr) {
+    axisX2->setVisible(state);
+  }
+  this->m_chart->update();
+  QApplication::processEvents();
+}
+
+void View::exportAction() {
+
+  if (this->is_durability) {
+    exportDurability();
+    return;
+  }
+
+  if (this->is_robot) {
+    exportRobot();
+    return;
+  }
+
+  bool ok;
+  QFileInfo fi(serieName);
+  QString text = QInputDialog::getText(this, tr("Export current view"),
+                                       tr("Picture name:"), QLineEdit::Normal,
+                                       fi.baseName(), &ok);
+  if (ok && !text.isEmpty())
+    savePNG(fi.absolutePath() + "/" + text);
+}
+
+
+void View::cutGraph(double start, double stop) {
+  if (!cutMode)
+    return;
+
+  if (stop > 0) {
+
+    QPointF temp_point;
+    QVector<QPointF> new_vector;
+    QVector<QPointF> m_points_vector;
+
+    // qDebug() << "stop" << stop;
+
+    if ((temperature != nullptr) and temperature->points().size() > 5) {
+
+      if (stop > temperature->points().last().x())
+        stop = temperature->points().last().x();
+    } else if ((OM != nullptr) and (OM->points().size() > 1)) {
+
+      if (stop > OM->points().last().x())
+        stop = OM->points().last().x();
+    }
+
+    // qDebug() << "stop" << stop;
+
+    for (auto m_serie : m_chart->series()) {
+
+      auto m_serie_xy = qobject_cast<QXYSeries *>(m_serie);
+      m_points_vector = m_serie_xy->points();
+
+      for (auto m_point : m_points_vector) {
+        if (m_point.x() < 0)
+          continue;
+        if (m_point.x() > start) {
+
+          if (m_point.x() > stop) {
+            temp_point = m_point;
+            temp_point.setX(m_point.x() - (stop - start));
+            new_vector.append(temp_point);
+          }
+        } else {
+          new_vector.append(m_point);
+        }
+      }
+
+      m_serie_xy->replace(new_vector);
+      new_vector.clear();
+      m_points_vector.clear();
+
+      if (m_serie_xy->property("my_type") == "error") {
+        if (m_serie_xy->points().size() == 0) {
+          m_chart->removeSeries(m_serie_xy);
+          m_serie_xy->deleteLater();
+        } else {
+          m_serie_xy->setName(m_serie_xy->name().section('(', 0, 0) + "(" +
+                              QString::number(m_serie_xy->points().size()) +
+                              ")");
+        }
+      }
+    }
+
+    // if (axisX != nullptr)
+    // {
+    //     auto init_X_Max = this->initialScale.value(axisX).y();
+    //     this->initialScale.insert(axisX, QPointF(0, init_X_Max - (stop -
+    //     start)));
+    // }
+
+    // if (axis_travel != nullptr)
+    // {
+    //     auto init_X_Max = this->initialScale.value(axis_travel).y();
+    //     this->initialScale.insert(axis_travel, QPointF(0, init_X_Max -
+    //     (stop - start)));
+    // }
+
+    for (auto axis : m_chart->axes(Qt::Horizontal)) {
+      QValueAxis *valueAxis = qobject_cast<QValueAxis *>(axis);
+      if (valueAxis->objectName() == "axisX2")
+        continue;
+      auto init_X_Max = this->initialScale.value(valueAxis).y();
+      this->initialScale.insert(valueAxis,
+                                QPointF(0, init_X_Max - (stop - start)));
+    }
+
+    new_vector.clear();
+    m_points_vector.clear();
+    new_vector.squeeze();
+    m_points_vector.squeeze();
+
+    m_chart->update();
+
+    updateCallouts();
+
+    View::m_chart->update();
+    View::update();
+    QApplication::processEvents();
+  }
+}
+
+
+void showStatistics(const QVector<QPointF> *serie, QString name) {
+  if (!serie || serie->isEmpty())
+    return;
+
+  // Calculate statistics
+  double average = 0, min = serie->at(0).y(), max = serie->at(0).y(), sum = 0;
+  for (const QPointF &point : *serie) {
+    double y = point.y();
+    min = std::min(min, y);
+    max = std::max(max, y);
+    sum += y;
+  }
+  average = sum / serie->size();
+
+  double variance = 0;
+  for (const QPointF &point : *serie) {
+    double diff = point.y() - average;
+    variance += diff * diff;
+  }
+  variance /= serie->size();
+  double stddev = std::sqrt(variance);
+
+  // Copy statistics to clipboard
+  QString statsString =
+      QString("Min: %1\nMax: %2\nAverage: %3\nStandard Deviation: %4")
+          .arg(min)
+          .arg(max)
+          .arg(average)
+          .arg(stddev);
+  QGuiApplication::clipboard()->setText(statsString);
+
+  // Setup Dialog
+  QDialog dialog;
+  dialog.setWindowTitle(name + " - Statistics & Distribution");
+  dialog.resize(1024, 768); // Set initial dialog size
+  QVBoxLayout *layout = new QVBoxLayout(&dialog);
+
+  // Customize font for statistics text
+  QFont statsFont;
+  statsFont.setBold(true);
+  statsFont.setPointSize(12);
+
+  // Text for statistics with customized font
+  QLabel *statsLabel = new QLabel(statsString);
+  statsLabel->setFont(statsFont);
+  layout->addWidget(statsLabel);
+
+  // Setup chart
+  QChart *chart = new QChart();
+  QBarSeries *series = new QBarSeries();
+
+  // Histogram calculation with percentage
+  int numBins = 10;
+  QVector<double> bins(numBins, 0);
+  double binWidth = (max - min) / numBins;
+  int totalPoints = serie->size();
+
+  for (const QPointF &point : *serie) {
+    int binIndex =
+        std::min(static_cast<int>((point.y() - min) / binWidth), numBins - 1);
+    bins[binIndex]++;
+  }
+
+  QBarSet *set = new QBarSet("Distribution");
+  for (double bin : bins) {
+    double percent = (bin / totalPoints) * 100;
+    *set << percent;
+  }
+  series->append(set);
+
+  chart->addSeries(series);
+  chart->createDefaultAxes();
+  chart->legend()->hide();
+
+  // Customize axes
+  QFont labelFont;
+  labelFont.setBold(true);
+  labelFont.setPointSize(12);
+
+  QBarCategoryAxis *categoryAxis = new QBarCategoryAxis();
+  for (int i = 0; i < numBins; ++i) {
+    categoryAxis->append(QString("[%1, %2)")
+                             .arg(min + i * binWidth)
+                             .arg(min + (i + 1) * binWidth));
+  }
+  categoryAxis->setTitleText("Bin Range");
+  categoryAxis->setTitleFont(labelFont);
+  chart->addAxis(categoryAxis, Qt::AlignBottom);
+  series->attachAxis(categoryAxis);
+
+  QValueAxis *axisY = new QValueAxis();
+  axisY->setRange(0, 100);
+  axisY->setTitleText("Percentage (%)");
+  axisY->setTitleFont(labelFont);
+  chart->addAxis(axisY, Qt::AlignLeft);
+  series->attachAxis(axisY);
+
+  QChartView *chartView = new QChartView(chart);
+  chartView->setMinimumSize(640, 480);
+  layout->addWidget(chartView);
+
+  dialog.exec();
+}
+
+
+
+
+void View::handleMarkerClicked() {
+  // qDebug() << "handleMarkerClicked";
+
+  this->userInteracted = true;
+  QLegendMarker *marker = qobject_cast<QLegendMarker *>(sender());
+  Q_ASSERT(marker);
+
+  //    qDebug() << "marker clicked!";
+
+  switch (marker->type()) {
+  case QLegendMarker::LegendMarkerTypeXY: {
+
+    if (mid_clicked) {
+      auto serie = qobject_cast<QXYSeries *>(marker->series())->points();
+      showStatistics(&serie, marker->series()->name());
+      // double average = 0;
+      // double min = serie.at(0).y();
+      // double max = serie.at(0).y();
+      // double sum = 0;
+
+      // for (QPointF point : serie) {
+      //   min > point.y() ? min = point.y() : min;
+      //   max < point.y() ? max = point.y() : max;
+      //   sum += point.y();
+      // }
+      // average = sum / serie.size();
+
+      // // Second pass to calculate the variance
+      // double variance = 0;
+      // for (const QPointF &point : serie) {
+      //   double diff = point.y() - average;
+      //   variance += diff * diff;
+      // }
+      // variance = variance / serie.size();
+      // double stddev = std::sqrt(variance);
+
+      // QString unit = "";
+      // QString sname = marker->series()->name();
+      // if ((sname.contains("[A]")) or (sname.contains("Curr")) or
+      //     (sname.contains("curr")) or (sname.contains("ström")) or
+      //     (sname.contains("Strom")) or (sname.contains("strom")) or
+      //     (sname.contains("Ström")))
+      //   unit = "A";
+
+      // if ((sname.contains("[V]")) or (sname.contains("Volt")) or
+      //     (sname.contains("volt")) or (sname.contains("spann")) or
+      //     (sname.contains("Spann")))
+      //   unit = "V";
+
+      // if ((sname.contains("[°C]")) or (sname.contains("Tempe")) or
+      //     (sname.contains("tempe")) or (sname.contains("[C]")))
+      //   unit = "°C";
+
+      // if ((sname.contains("[%rh]")) or (sname.contains("Humid")) or
+      //     (sname.contains("humid")) or (sname.contains("Feuch")) or
+      //     (sname.contains("feuch")) or (sname.contains("[%]")))
+      //   unit = "%rh";
+
+      // QString text = "Measurements: " + QString::number(serie.size()) +
+      //                "\nMin: " + engineering_Format(min) + unit +
+      //                "\nMax: " + engineering_Format(max) + unit +
+      //                "\nAvg: " + engineering_Format(average) + unit +
+      //                "\nStdDev: " + QString::number(stddev);
+
+      // //            qDebug() << text;
+
+      // QMessageBox::information(this, sname + tr(" statistics:"), text);
+      // QClipboard *clipboard = QApplication::clipboard();
+      // clipboard->setText(marker->series()->name() + tr(" statistics:\n") +
+      //                    text);
+      break;
+    } else if (rmb_clicked) {
+
+      QString sname = qobject_cast<QXYSeries *>(marker->series())->name();
+      QColor scolor = qobject_cast<QXYSeries *>(marker->series())->color();
+
+      if (qobject_cast<QXYSeries *>(marker->series())->name() ==
+          "Operating Mode")
+        return;
+
+      if (qobject_cast<QXYSeries *>(marker->series())->brush().style() ==
+          Qt::TexturePattern) {
+        auto size = qobject_cast<QXYSeries *>(marker->series())
+                        ->brush()
+                        .textureImage()
+                        .size();
+        auto image =
+            qobject_cast<QXYSeries *>(marker->series())->brush().textureImage();
+        bool found = false;
+        for (int x = 0; x < size.width(); x++) {
+          for (int y = 0; y < size.height(); y++) {
+            if (image.pixelColor(x, y).alpha() == 255) {
+              // qDebug() << "tried to get color" << image.pixelColor (x, y) <<
+              // image.pixelColor (x, y).alpha ();
+              scolor = image.pixelColor(x, y);
+              found = true;
+              break;
+            }
+          }
+          if (found)
+            break;
+        }
+      }
+
+      QColor color =
+          QColorDialog::getColor(scolor, this, "Select " + sname + " Color");
+
+      qDebug() << sname;
+
+      if (color.isValid()) {
+        if (QXYSeries *lineseries =
+                qobject_cast<QXYSeries *>(marker->series())) {
+          if (lineseries->brush().style() == Qt::TexturePattern) // error
+          {
+
+            bool ok;
+            QStringList items;
+            items << tr("×") << tr("#") << tr("§") << tr("*") << tr("☼")
+                  << tr("↑") << tr("↓") << tr("↨") << tr("¤") << tr("Θ")
+                  << tr("√") << tr("•") << tr("♦") << tr("■") << tr("▲")
+                  << tr("▼");
+
+            QInputDialog symbolInput;
+            symbolInput.setParent(nullptr);
+            symbolInput.setWindowTitle(sname); // sname + tr(" error symbol")
+            symbolInput.setLabelText(tr("Symbol:")); // Choose/insert symbol:
+            symbolInput.setInputMode(QInputDialog::TextInput);
+            symbolInput.setComboBoxItems(items);
+            symbolInput.setFont(QFont("Arial", 18, QFont::Bold));
+            symbolInput.setComboBoxEditable(true);
+            ok = symbolInput.exec();
+            QString text = symbolInput.textValue();
+            if (ok && !text.isEmpty())
+              text = text.at(0);
+            else
+              text = "x";
+
+            int size = QInputDialog::getInt(this, tr("Error Symbol size"),
+                                            sname + " error symbol size:", 20,
+                                            4, 60, 1, &ok);
+            if (ok)
+              ;
+            else
+              size = 20;
+
+            const auto mytest = text;
+            auto font = QFont("Arial", size, QFont::Bold);
+            auto fm = QFontMetrics(font);
+            auto rectangle = fm.boundingRect(text);
+            auto w = fm.horizontalAdvance(text);
+            auto h = rectangle.height();
+            qDebug() << rectangle;
+
+            auto s = w > h ? w : h;
+
+            QImage star(s, s, QImage::Format_ARGB32);
+            star.fill(Qt::transparent);
+            QPainter painter(&star);
+            painter.setPen(color);
+            painter.setFont(font);
+            painter.drawText(star.rect(), Qt::AlignCenter, text);
+            painter.end();
+
+            lineseries->setBrush(star);
+            lineseries->setPen(QColor(Qt::transparent));
+
+            lineseries->setProperty("my_symbol", QVariant(text));
+            lineseries->setProperty("my_symbol_size", QVariant(size));
+            lineseries->setProperty("sprite", QVariant(star));
+
+            QColor my_color = color;
+            my_color.setAlpha(200);
+            lineseries->setProperty("my_color", QVariant(my_color.rgba()));
+
+            static_cast<QScatterSeries *>(lineseries)->setMarkerSize(s);
+          } else // other
+          {
+            if (color != QColor(0, 0, 0)) {
+              lineseries->setColor(color);
+              lineseries->setBrush(color);
+            } else {
+              lineseries->setColor(QColor(65, 65, 65));
+              lineseries->setBrush(QColor(65, 65, 65));
+            }
+          }
+
+          /* replaced with universal solution below
+          //also color the axes if applies
+          if (lineseries->name () == "Temperature")
+          {
+              this->axis_temperature->setLinePenColor (color);
+              this->axis_temperature->setLabelsColor (color);
+              //               qobject_cast<QLineSeries *>(sender
+          ())->setUseOpenGL (false);
+          }
+          else if (lineseries->name () == "Current active")
+          {
+              this->axis_current->setLinePenColor (color);
+              this->axis_current->setLabelsColor (color);
+              //                    qobject_cast<QScatterSeries *>(sender
+          ())->setUseOpenGL (false);
+          }
+          else if (lineseries->name () == "Current sleep")
+          {
+              this->axis_sleep_current->setLinePenColor (color);
+              this->axis_sleep_current->setLabelsColor (color);
+              //                        qobject_cast<QScatterSeries *>(sender
+          ())->setUseOpenGL (false);
+          }
+          else if (lineseries->name () == "Humidity")
+          {
+              this->axis_humidity->setLinePenColor (color);
+              this->axis_humidity->setLabelsColor (color);
+          }
+          else if (lineseries->name () == "Voltage")
+          {
+              this->axis_voltage->setLinePenColor (color);
+              this->axis_voltage->setLabelsColor (color);
+          }
+          */
+
+          for (auto attachedaxis : lineseries->attachedAxes()) {
+            if (attachedaxis->alignment() != Qt::AlignBottom) {
+              attachedaxis->setLinePenColor(color);
+              attachedaxis->setLabelsColor(color);
+            }
+          }
+        }
+        m_chart->legend()->update();
+      }
+      emit propertyChanged();
+      break;
+    }
+
+    // Toggle visibility of series
+    marker->series()->setVisible(!marker->series()->isVisible());
+    if (marker->label().contains("(")) {
+      emit markerToggled(marker->label().section('(', 0, 0));
+    } else {
+      emit markerToggled(marker->label());
+    }
+
+    // Turn legend marker back to visible, since hiding series also hides the
+    // marker and we don't want it to happen now.
+    marker->setVisible(true);
+
+    // Dim the marker, if series is not visible
+    qreal alpha = 1.0;
+
+    // qDebug() << "serie name:" << marker->series()->name ();
+    if (!marker->series()->isVisible()) // hidden
+    {
+      // dim the marker label
+      alpha = 0.5;
+
+      // hide the callouts
+      for (Callout *callout : intPoints[marker->series()->name()]) {
+        if (!callout->supressed)
+          callout->hide();
+      }
+
+      //--> hide the corresponding normal MFU axis
+      if (marker->series()->name() == "Operating Mode")
+        axis_opmode->setVisible(false);
+      else if (marker->series()->name() == "Current sleep")
+        axis_sleep_current->setVisible(false);
+      else if (marker->series()->name() == "Current active")
+        axis_current->setVisible(false);
+      else if (marker->series()->name() == "Humidity")
+        axis_humidity->setVisible(false);
+      else if (marker->series()->name() == "Temperature")
+        axis_temperature->setVisible(false);
+      //<--
+      else {
+        //-->if this is the last MFU AS serie on axis, hide the axis
+        bool voltage_visible = false;
+        bool current_visible = false;
+        for (auto my_marker : m_chart->legend()->markers()) {
+          if (my_marker->series()->property("my_type") == "current")
+            if (my_marker->series()->isVisible())
+              current_visible = true;
+
+          if (my_marker->series()->property("my_type") == "voltage")
+            if (my_marker->series()->isVisible())
+              voltage_visible = true;
+        }
+        if (axis_current != nullptr)
+          axis_current->setVisible(current_visible);
+        if (axis_voltage != nullptr)
+          axis_voltage->setVisible(voltage_visible);
+        //<--
+      }
+    } else // visible
+    {
+      // show callouts
+      for (Callout *callout : intPoints[marker->series()->name()]) {
+        if (!callout->supressed)
+          callout->show();
+      }
+
+      //--> show the corresponding normal MFU axis
+      if (marker->series()->name() == "Operating Mode")
+        axis_opmode->setVisible(true);
+      else if (marker->series()->name() == "Current sleep")
+        axis_sleep_current->setVisible(true);
+      else if (marker->series()->name() == "Current active")
+        axis_current->setVisible(true);
+      else if (marker->series()->name() == "Humidity")
+        axis_humidity->setVisible(true);
+      else if (marker->series()->name() == "Temperature")
+        axis_temperature->setVisible(true);
+      //<--
+      else {
+        //--> if any MFU AS serie is visible, show it's corresponding axis
+        bool voltage_visible = false;
+        bool current_visible = false;
+        for (auto my_marker : m_chart->legend()->markers()) {
+
+          if (my_marker->series()->property("my_type") == "current")
+            if (my_marker->series()->isVisible())
+              current_visible = true;
+
+          if (my_marker->series()->property("my_type") == "voltage")
+            if (my_marker->series()->isVisible())
+              voltage_visible = true;
+        }
+        if (axis_current != nullptr)
+          axis_current->setVisible(current_visible);
+        if (axis_voltage != nullptr)
+          axis_voltage->setVisible(voltage_visible);
+        //<--
+      }
+    }
+
+    updateCallouts();
+
+    QColor color;
+    QBrush brush = marker->labelBrush();
+    color = brush.color();
+    color.setAlphaF(alpha);
+    brush.setColor(color);
+    marker->setLabelBrush(brush);
+
+    brush = marker->brush();
+    color = brush.color();
+    color.setAlphaF(alpha);
+    brush.setColor(color);
+    marker->setBrush(brush);
+
+    QPen pen = marker->pen();
+    color = pen.color();
+    color.setAlphaF(alpha);
+    pen.setColor(color);
+    marker->setPen(pen);
+
+    // Start new logic for axis hide/show
+    QAbstractSeries *series = marker->series();
+    QList<QAbstractAxis *> axes = series->attachedAxes();
+    QList<QAbstractSeries *> seriesList = m_chart->series();
+    QValueAxis *yAxis = nullptr;
+    for (QAbstractAxis *axis : axes) {
+      if (axis->orientation() == Qt::Vertical) {
+        yAxis = qobject_cast<QValueAxis *>(axis);
+        break;
+      }
+    }
+
+    if (yAxis != nullptr) {
+      bool hasVisibleSeries = false;
+      for (QAbstractSeries *otherSeries : seriesList) {
+        if (otherSeries == series)
+          continue;
+        if (!otherSeries->isVisible())
+          continue;
+
+        QList<QAbstractAxis *> otherAxes = otherSeries->attachedAxes();
+        if (otherAxes.contains(yAxis)) {
+          hasVisibleSeries = true;
+          break;
+        }
+      }
+      yAxis->setVisible(hasVisibleSeries || series->isVisible());
+    }
+    // End new logic for axis hide/show
+
+    View::update();
+    break;
+  }
+  default: {
+    qDebug() << "Unknown marker type";
+    break;
+  }
+  }
+}
+
+void View::toggleLegendMarker(QString name, bool state) {
+  qDebug() << "TGM";
+  QLegendMarker *marker = nullptr;
+
+  for (auto m_marker : m_chart->legend()->markers()) {
+    if (m_marker->label().contains(name)) {
+      marker = m_marker;
+      break;
+    }
+  }
+
+  if (marker == nullptr)
+    return;
+
+  if (marker->series()->isVisible() == state)
+    return;
+
+  // Toggle visibility of series
+  marker->series()->setVisible(!marker->series()->isVisible());
+
+  // Turn legend marker back to visible, since hiding series also hides the
+  // marker and we don't want it to happen now.
+  marker->setVisible(true);
+
+  // Dim the marker, if series is not visible
+  qreal alpha = 1.0;
+
+  // qDebug() << "serie name:" << marker->series()->name ();
+  if (!marker->series()->isVisible()) // hidden
+  {
+    // dim the marker label
+    alpha = 0.5;
+
+    // hide the callouts
+    for (Callout *callout : intPoints[marker->series()->name()]) {
+      callout->hide();
+    }
+
+    //--> hide the corresponding normal MFU axis
+    if (marker->series()->name() == "Operating Mode")
+      axis_opmode->setVisible(false);
+    else if (marker->series()->name() == "Current sleep")
+      axis_sleep_current->setVisible(false);
+    else if (marker->series()->name() == "Current active")
+      axis_current->setVisible(false);
+    else if (marker->series()->name() == "Humidity")
+      axis_humidity->setVisible(false);
+    else if (marker->series()->name() == "Temperature")
+      axis_temperature->setVisible(false);
+    //<--
+    else {
+      //-->if this is the last MFU AS serie on axis, hide the axis
+      bool voltage_visible = false;
+      bool current_visible = false;
+      for (auto my_marker : m_chart->legend()->markers()) {
+        if (my_marker->series()->property("my_type") == "current")
+          if (my_marker->series()->isVisible())
+            current_visible = true;
+
+        if (my_marker->series()->property("my_type") == "voltage")
+          if (my_marker->series()->isVisible())
+            voltage_visible = true;
+      }
+      if (axis_current != nullptr)
+        axis_current->setVisible(current_visible);
+      if (axis_voltage != nullptr)
+        axis_voltage->setVisible(voltage_visible);
+      //<--
+    }
+  } else // visible
+  {
+    // show callouts
+    for (Callout *callout : intPoints[marker->series()->name()]) {
+      callout->show();
+    }
+
+    //--> show the corresponding normal MFU axis
+    if (marker->series()->name() == "Operating Mode")
+      axis_opmode->setVisible(true);
+    else if (marker->series()->name() == "Current sleep")
+      axis_sleep_current->setVisible(true);
+    else if (marker->series()->name() == "Current active")
+      axis_current->setVisible(true);
+    else if (marker->series()->name() == "Humidity")
+      axis_humidity->setVisible(true);
+    else if (marker->series()->name() == "Temperature")
+      axis_temperature->setVisible(true);
+    //<--
+    else {
+      //--> if any MFU AS serie is visible, show it's corresponding axis
+      bool voltage_visible = false;
+      bool current_visible = false;
+      for (auto my_marker : m_chart->legend()->markers()) {
+
+        if (my_marker->series()->property("my_type") == "current")
+          if (my_marker->series()->isVisible())
+            current_visible = true;
+
+        if (my_marker->series()->property("my_type") == "voltage")
+          if (my_marker->series()->isVisible())
+            voltage_visible = true;
+      }
+      if (axis_current != nullptr)
+        axis_current->setVisible(current_visible);
+      if (axis_voltage != nullptr)
+        axis_voltage->setVisible(voltage_visible);
+      //<--
+    }
+  }
+
+  updateCallouts();
+
+  QColor color;
+  QBrush brush = marker->labelBrush();
+  color = brush.color();
+  color.setAlphaF(alpha);
+  brush.setColor(color);
+  marker->setLabelBrush(brush);
+
+  brush = marker->brush();
+  color = brush.color();
+  color.setAlphaF(alpha);
+  brush.setColor(color);
+  marker->setBrush(brush);
+
+  QPen pen = marker->pen();
+  color = pen.color();
+  color.setAlphaF(alpha);
+  pen.setColor(color);
+  marker->setPen(pen);
+
+  View::update();
+}
+
+void View::handleMarkerToggle(QLegendMarker *marker) {
+  //    QLegendMarker* marker = qobject_cast<QLegendMarker*> (sender());
+  //    Q_ASSERT(marker);
+
+  switch (marker->type())
+
+  {
+  case QLegendMarker::LegendMarkerTypeXY: {
+
+    // Toggle visibility of series
+    marker->series()->setVisible(!marker->series()->isVisible());
+
+    // Turn legend marker back to visible, since hiding series also hides the
+    // marker and we don't want it to happen now.
+    marker->setVisible(true);
+
+    // Dim the marker, if series is not visible
+    qreal alpha = 1.0;
+
+    if (!marker->series()->isVisible()) {
+
+      alpha = 0.5;
+
+      for (Callout *callout : intPoints[marker->series()->name()]) {
+        callout->hide();
+      }
+
+      if (marker->series()->name() == "Operating Mode")
+        axis_opmode->setVisible(false);
+      else if (marker->series()->name() == "Current sleep")
+        axis_sleep_current->setVisible(false);
+      else if (marker->series()->name() == "Current active")
+        axis_current->setVisible(false);
+      else if (marker->series()->name() == "Humidity")
+        axis_humidity->setVisible(false);
+      else if (marker->series()->name() == "Temperature")
+        axis_temperature->setVisible(false);
+    } else {
+      for (Callout *callout : intPoints[marker->series()->name()]) {
+        callout->show();
+      }
+
+      if (marker->series()->name() == "Operating Mode")
+        axis_opmode->setVisible(true);
+      else if (marker->series()->name() == "Current sleep")
+        axis_sleep_current->setVisible(true);
+      else if (marker->series()->name() == "Current active")
+        axis_current->setVisible(true);
+      else if (marker->series()->name() == "Humidity")
+        axis_humidity->setVisible(true);
+      else if (marker->series()->name() == "Temperature")
+        axis_temperature->setVisible(true);
+    }
+
+    for (auto serie : m_chart->series()) {
+      if (serie->isVisible())
+        for (Callout *callout : intPoints[serie->name()])
+          callout->updateGeometry();
+    }
+
+    QColor color;
+    QBrush brush = marker->labelBrush();
+    color = brush.color();
+    color.setAlphaF(alpha);
+    brush.setColor(color);
+    marker->setLabelBrush(brush);
+
+    brush = marker->brush();
+    color = brush.color();
+    color.setAlphaF(alpha);
+    brush.setColor(color);
+    marker->setBrush(brush);
+
+    QPen pen = marker->pen();
+    color = pen.color();
+    color.setAlphaF(alpha);
+    pen.setColor(color);
+    marker->setPen(pen);
+    View::update();
+    break;
+  }
+  default: {
+    qDebug() << "Unknown marker type";
+    break;
+  }
+  }
+}
+
+void View::savePNG(QString name) {
+
+  for (auto legend_item : m_chart->legend()->markers()) {
+    if (!legend_item->series()->isVisible()) {
+      legend_item->setVisible(false);
+    }
+  }
+
+  m_chart->legend()->layout()->invalidate();
+  this->update();
+  QApplication::processEvents();
+
+  QPixmap p = this->grab(
+      m_chart->rect().toAlignedRect().marginsRemoved(m_chart->margins() + 10));
+  QOpenGLWidget *glWidget = View::findChild<QOpenGLWidget *>();
+  if (glWidget) {
+    QPainter painter(&p);
+    //                    QPoint d = glWidget->mapToGlobal(QPoint()) -
+    //                    View::mapToGlobal(QPoint());
+    //                    painter.setCompositionMode(QPainter::CompositionMode_SourceAtop);
+    //                    painter.drawImage(d, glWidget->grabFramebuffer());
+
+    painter.end();
+  }
+  QClipboard *clipboard = QApplication::clipboard();
+  clipboard->setPixmap(p);
+
+  qDebug() << name;
+  p.save(name + "_" + QString::number(exportNr) + ".png", "PNG");
+  exportNr += 1;
+
+  for (auto legend_item : m_chart->legend()->markers()) {
+    legend_item->setVisible(true);
+  }
+
+  m_chart->legend()->layout()->invalidate();
+  this->update();
+  QApplication::processEvents();
+}
+
+void View::adjustAxisRange(QValueAxis *axis) {
+  if (axis == nullptr)
+    return;
+  // if (!axis->isVisible())
+  //     return;
+  // if (axis->orientation () == Qt::Horizontal)
+  //     return;
+  if (axis->objectName() == "axis_dura_signals")
+    return;
+
+  QString format = axis->labelFormat();
+
+  // qDebug() << "initial:" << axis->objectName() << "axis format" << format
+  //          << "min-max" << axis->min() << axis->max();
+
+  // if (axis->min() < -10000000) {
+  //   axis->setMin(-10000000);
+  // }
+  // if (axis->max() > 10000000) {
+  //   axis->setMax(100000000);
+  // }
+
+  if (axis->min() == axis->max()) {
+    axis->setMin(axis->min() - 1);
+    axis->setMax(axis->min() + 1);
+  }
+
+  qDebug() << axis->objectName() << "axis format" << format << "min-max"
+           << axis->min() << axis->max();
+
+  if (format.contains("RA") or format.contains("RV")) {
+
+    if (axis->max() < 0)
+      ; // axis->setMax (1)
+    else if (axis->max() < 0.00001)
+      axis->setMax(0.00001);
+    else if (axis->max() < 0.00001)
+      axis->setMax(0.00001);
+    else if (axis->max() < 0.00005)
+      axis->setMax(0.00005);
+    else if (axis->max() < 0.0001)
+      axis->setMax(0.0001);
+    else if (axis->max() < 0.0002)
+      axis->setMax(0.0002);
+    else if (axis->max() < 0.0003)
+      axis->setMax(0.0003);
+    else if (axis->max() < 0.0004)
+      axis->setMax(0.0004);
+    else if (axis->max() < 0.0005)
+      axis->setMax(0.0005);
+    else if (axis->max() < 0.0008)
+      axis->setMax(0.0008);
+    else if (axis->max() < 0.001)
+      axis->setMax(0.001);
+    else if (axis->max() < 0.01)
+      axis->setMax(0.01);
+    else if (axis->max() < 0.03)
+      axis->setMax(0.03);
+    else if (axis->max() < 0.05)
+      axis->setMax(0.05);
+    else if (axis->max() < 0.08)
+      axis->setMax(0.08);
+    else if (axis->max() < 0.1)
+      axis->setMax(0.1);
+    else if (axis->max() < 0.13)
+      axis->setMax(0.13);
+    else if (axis->max() < 0.15)
+      axis->setMax(0.15);
+    else if (axis->max() < 0.2)
+      axis->setMax(0.2);
+    else if (axis->max() < 0.3)
+      axis->setMax(0.3);
+    else if (axis->max() < 0.5)
+      axis->setMax(0.5);
+    else if (axis->max() < 0.8)
+      axis->setMax(0.8);
+    else if (axis->max() < 1)
+      axis->setMax(1);
+    else if (axis->max() < 1.3)
+      axis->setMax(1.3);
+    else if (axis->max() < 1.5)
+      axis->setMax(1.5);
+    else if (axis->max() < 2)
+      axis->setMax(2);
+    else if (axis->max() < 5)
+      axis->setMax(5);
+    else if (axis->max() < 10)
+      axis->setMax(10);
+    else if (axis->max() < 15)
+      axis->setMax(15);
+    else if (axis->max() < 20)
+      axis->setMax(20);
+    else if (axis->max() < 25)
+      axis->setMax(25);
+    else if (axis->max() < 30)
+      axis->setMax(30);
+    else if (axis->max() < 35)
+      axis->setMax(35);
+    else if (axis->max() < 40)
+      axis->setMax(40);
+    else if (axis->max() < 50)
+      axis->setMax(50);
+    else if (axis->max() < 60)
+      axis->setMax(60);
+
+    if (axis->min() < -35)
+      ; // axis->setMin (0)
+    else if ((axis->min() < -30))
+      axis->setMin(-35);
+    else if ((axis->min() < -20))
+      axis->setMin(-30);
+    else if ((axis->min() < -15))
+      axis->setMin(-20);
+    else if ((axis->min() < -10))
+      axis->setMin(-15);
+    else if ((axis->min() < -5))
+      axis->setMin(-10);
+    else if ((axis->min() < -1))
+      axis->setMin(-5);
+    else if ((axis->min() < -0.5))
+      axis->setMin(-1);
+    else if ((axis->min() < -0.1))
+      axis->setMin(-0.5);
+    else if ((axis->min() < -0.05))
+      axis->setMin(-0.1);
+    else if ((axis->min() < -0.01))
+      axis->setMin(-0.05);
+    else if ((axis->min() < -0.005))
+      axis->setMin(-0.01);
+    else if ((axis->min() < -0.001))
+      axis->setMin(-0.005);
+    else if ((axis->min() < -0.0005))
+      axis->setMin(-0.001);
+    else if ((axis->min() < 0))
+      axis->setMin(-0.0001);
+    else if ((axis->min() < 0.000005))
+      axis->setMin(0);
+    else if ((axis->min() < 0.00001))
+      axis->setMin(0);
+    else if ((axis->min() < 0.00003))
+      axis->setMin(0.00001);
+    else if ((axis->min() < 0.00005))
+      axis->setMin(0.00003);
+    else if ((axis->min() < 0.00008))
+      axis->setMin(0.00005);
+    else if ((axis->min() < 0.0001))
+      axis->setMin(0.00008);
+    else if ((axis->min() < 0.0002))
+      axis->setMin(0.0001);
+    else if ((axis->min() < 0.0003))
+      axis->setMin(0.0002);
+    else if ((axis->min() < 0.0005))
+      axis->setMin(0.0003);
+    else if ((axis->min() < 0.0008))
+      axis->setMin(0.0005);
+    else if ((axis->min() < 0.001))
+      axis->setMin(0.0008);
+    else if ((axis->min() < 0.002))
+      axis->setMin(0.001);
+    else if ((axis->min() < 0.003))
+      axis->setMin(0.002);
+    else if ((axis->min() < 0.005))
+      axis->setMin(0.003);
+    else if ((axis->min() < 0.01))
+      axis->setMin(0.005);
+    else if ((axis->min() < 0.02))
+      axis->setMin(0.01);
+    else if ((axis->min() < 0.03))
+      axis->setMin(0.02);
+    else if ((axis->min() < 0.05))
+      axis->setMin(0.03);
+    else if ((axis->min() < 0.08))
+      axis->setMin(0.05);
+    else if ((axis->min() < 0.1))
+      axis->setMin(0.08);
+    else if ((axis->min() < 0.15))
+      axis->setMin(0.1);
+    else if ((axis->min() < 0.5))
+      axis->setMin(0.1);
+    else if ((axis->min() < 1))
+      axis->setMin(0);
+    else if ((axis->min() < 5))
+      axis->setMin(0);
+    else if ((axis->min() < 10))
+      axis->setMin(5);
+    else if ((axis->min() < 15))
+      axis->setMin(10);
+    else if ((axis->min() < 20))
+      axis->setMin(15);
+    else if ((axis->min() < 25))
+      axis->setMin(20);
+    else if ((axis->min() < 30))
+      axis->setMin(25);
+    else if ((axis->min() < 35))
+      axis->setMin(30);
+    else if ((axis->min() < 40))
+      axis->setMin(35);
+    else if ((axis->min() < 45))
+      axis->setMin(40);
+    else if ((axis->min() < 50))
+      axis->setMin(45);
+    else if ((axis->min() < 55))
+      axis->setMin(50);
+
+    if (axis->min() == axis->max())
+      axis->setMin(axis->min() - axis->min());
+
+    qDebug() << "adjusted min-max" << axis->min() << axis->max();
+
+    axis->setVisible(true);
+  }
+
+  else if (format.contains("%rh") or format.contains("C")) {
+
+    if (axis->max() > 150)
+      axis->setMax(axis->max() +
+                   (axis->max() * 0.1)); // should not happen, do nothing;
+    else if (axis->max() > 120)
+      axis->setMax(150);
+    else if (axis->max() > 100)
+      axis->setMax(120);
+    else if (axis->max() > 85)
+      axis->setMax(100);
+    else if (axis->max() > 60)
+      axis->setMax(85);
+    else if (axis->max() > 40)
+      axis->setMax(60);
+    else if (axis->max() > 20)
+      axis->setMax(40);
+    else if (axis->max() > 0)
+      axis->setMax(20);
+    else if (axis->max() > -10)
+      axis->setMax(0);
+    else if (axis->max() > -20)
+      axis->setMax(-10);
+    else if (axis->max() > -40)
+      axis->setMax(-20);
+    else if (axis->max() > -50)
+      axis->setMax(-40);
+    else if (axis->max() > -80)
+      axis->setMax(-50);
+
+    if (axis->min() < -80) {
+      // qDebug() << "axis min set here:" << axis->min()
+      //          << axis->min() + (axis->min() * 0.1);
+      axis->setMin(axis->min() + (axis->min() * 0.1));
+    } else if (axis->min() < -50)
+      axis->setMin(-80);
+    else if (axis->min() < -30)
+      axis->setMin(-50);
+    else if (axis->min() < -20)
+      axis->setMin(-30);
+    else if (axis->min() < -10)
+      axis->setMin(-20);
+    else if (axis->min() < 0)
+      axis->setMin(-10);
+    else if (axis->min() < 10)
+      axis->setMin(0);
+    else if (axis->min() < 20)
+      axis->setMin(10);
+    else if (axis->min() < 40)
+      axis->setMin(20);
+    else if (axis->min() < 60)
+      axis->setMin(40);
+    else if (axis->min() < 80)
+      axis->setMin(60);
+    else if (axis->min() < 100)
+      axis->setMin(80);
+    else if (axis->min() < 120)
+      axis->setMin(100);
+    else if (axis->min() < 150)
+      axis->setMin(120);
+
+    qDebug() << "adjusted min-max" << axis->min() << axis->max();
+  } else if (axis->orientation() == Qt::Vertical) {
+    // Axes with less-specific formatting
+
+    if (axis->max() < 1) {
+      axis->setMax(3); // Extend the maximum upwards
+    } else if (axis->max() < 10) {
+      axis->setMax(axis->max() + 2); // Add a margin above
+    } else {
+      // For larger values, add a 10% margin
+      axis->setMax(axis->max() * 1.1);
+    }
+
+    if (axis->min() > 0) {
+      axis->setMin(-1); // Extend minimum downwards
+    } else if (axis->min() > -10) {
+      axis->setMin(axis->min() - 2); // Add a margin below
+    } else {
+      // For smaller values, add a 10% margin
+      axis->setMin(axis->min() * 0.9);
+    }
+  }
+
+  if (axis->orientation() == Qt::Vertical) {
+    axis->applyNiceNumbers();
+    int desiredTickCount = std::max(1, (int)abs(axis->max() - axis->min()) + 1);
+    int maxAllowedTicks = 11;
+    desiredTickCount = std::min(desiredTickCount, maxAllowedTicks);
+    axis->setTickCount(desiredTickCount);
+    axis->setVisible(true);
+  }
+  this->initialScale.insert(axis, QPointF(axis->min(), axis->max()));
+
+  return;
+}
+
+void View::actionOpmEdit() {
+  bool ok;
+  if (axis_opmode == nullptr)
+    return;
+
+  auto current_format = axis_opmode->labelFormat().split("|");
+  QString new_format = current_format.at(0);
+
+  QString OpM_C =
+      QInputDialog::getText(this, tr("Change OpM Name"), tr("OpM C name:"),
+                            QLineEdit::Normal, current_format.at(1), &ok);
+  if (ok && !OpM_C.isEmpty())
+    new_format += "|" + OpM_C;
+  else
+    new_format += "|" + current_format.at(1);
+
+  QFileInfo fi(fileNameArg);
+  QString OpM_D =
+      QInputDialog::getText(this, tr("Change OpM Name"), tr("OpM D name:"),
+                            QLineEdit::Normal, current_format.at(2), &ok);
+  if (ok && !OpM_D.isEmpty())
+    new_format += "|" + OpM_D;
+  else
+    new_format += "|" + current_format.at(2);
+
+  QString OpM_E =
+      QInputDialog::getText(this, tr("Change OpM Name"), tr("OpM E name:"),
+                            QLineEdit::Normal, current_format.at(3), &ok);
+  if (ok && !OpM_E.isEmpty())
+    new_format += "|" + OpM_E;
+  else
+    new_format += "|" + current_format.at(3);
+
+  axis_opmode->setLabelFormat(new_format.toUtf8());
+
+  emit propertyChanged();
+}
+
+void View::actionTitleEdit() {
+  bool ok;
+  QFileInfo fi(fileNameArg);
+  QString text =
+      QInputDialog::getText(this, tr("Change chart title"), tr("Chart title:"),
+                            QLineEdit::Normal, m_chart->title(), &ok);
+  if (ok && !text.isEmpty())
+    m_chart->setTitle(text);
+}
+
+double engineering_value(double value) {
+
+  value = qAbs(value);
+
+  if (value >= 3000000) {
+    value /= 1000000;
+  } else if (value >= 3000) {
+    value /= 1000;
+  } else if (value >= 3) {
+    // No unit needed
+  } else if (value >= 0.003) {
+    value *= 1000;
+  } else if (value >= 0.000003) {
+    value *= 1000000;
+  } else {
+    value *= 1000000000;
+  }
+
+  return value;
+}
+
+
+
+void View::adjustAxisFormat(QValueAxis *axis, qreal min, qreal max) {
+  int ticks = axis->tickCount();
+  if (ticks < 2)
+    return;
+
+  min = engineering_value(min);
+  max = engineering_value(max);
+
+  double interval = (max - min) / (ticks - 1);
+
+  // Compute minimal decimals ensuring unique tick labels
+  int decimals = 0;
+  bool uniqueLabels = false;
+  while (!uniqueLabels && decimals < 10) {
+    uniqueLabels = true;
+    QString prev = QString::number(min, 'f', decimals);
+    for (int i = 1; i < ticks; ++i) {
+      double value = min + i * interval;
+      QString current = QString::number(value, 'f', decimals);
+      if (current == prev) {
+        uniqueLabels = false;
+        break;
+      }
+      prev = current;
+    }
+    if (!uniqueLabels)
+      ++decimals;
+  }
+
+  // Build a new label format string that preserves the engineering marker 'R'
+  // and the unit 'A' Note: "%%" escapes a literal '%' in the QString format.
+  QString formatStr = QString("4.%1RA ").arg(decimals);
+  formatStr = "%" + formatStr;
+  // qDebug() << "Axis format:" << formatStr;
+  axis->setLabelFormat(formatStr);
 }

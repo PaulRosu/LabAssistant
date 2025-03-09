@@ -193,7 +193,6 @@ protected:
 
   void construct_MFU_chart(QString path);
   void construct_haptic_chart(QString path);
-  void construct_haptic_chart_l(QString path);
   void construct_LabView_Chart(QString path);
   void construct_LabView_Chart_eval(QString path);
   void construct_ParamChart(QString path);

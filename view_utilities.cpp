@@ -179,3 +179,41 @@ void View::resetView() {
   }
   QApplication::processEvents();
 }
+
+double View::niceTickRange(double range, int tickCount) {
+  double unroundedTickSize = range / (tickCount - 1);
+  double x = ceil(log10(unroundedTickSize) - 1);
+  double pow10x = pow10(x);
+  double roundedTickRange = ceil(unroundedTickSize / pow10x) * pow10x;
+  return roundedTickRange;
+}
+
+
+QString View::engineering_Format(double value) {
+  QString unit;
+
+  value = qAbs(value);
+
+  if (value >= 3000000) {
+    value /= 1000000;
+    unit = QChar(0x004D); // "M"
+  } else if (value >= 3000) {
+    value /= 1000;
+    unit = QChar(0x004B); // "K"
+  } else if (value >= 3) {
+    // No unit needed
+  } else if (value >= 0.003) {
+    value *= 1000;
+    unit = QChar(0x006D); // "m"
+  } else if (value >= 0.000003) {
+    value *= 1000000;
+    unit = QChar(0x00B5); // "µ"
+  } else {
+    value *= 1000000000;
+    unit = QChar(0x006E); // "n"
+  }
+
+  return QString::asprintf("%4.1f%s", value, qPrintable(unit));
+}
+
+

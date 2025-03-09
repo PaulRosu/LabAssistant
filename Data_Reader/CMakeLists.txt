@@ -25,15 +25,10 @@ set(DATA_READER_FORMS
     "${CMAKE_CURRENT_SOURCE_DIR}/data/data_dialog.ui"
 )
 
-set(DATA_READER_RESOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/datamanagerresources.qrc"
-)
-
 add_library(Data_Reader STATIC
     ${DATA_READER_SOURCES}
     ${DATA_READER_HEADERS}
     ${DATA_READER_FORMS}
-    ${DATA_READER_RESOURCES}
 )
 
 set_target_properties(Data_Reader PROPERTIES

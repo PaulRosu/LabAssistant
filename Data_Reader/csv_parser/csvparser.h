@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QFile>
 #include <QStringList>
-#include <QVector>
+#include <QList>
 #include <QHash>
 #include "../data/data_types.h"
 #include <QSettings>
@@ -33,6 +33,11 @@ private:
 
     void detectDelimiter(const QString& line);
     QStringList parseLine(const QString& line);
+    void processDataLine(const QString& line, int& errorCount);
+    
+    // Fast string to double conversion functions
+    double fast_atof(const char *num, bool *ok = nullptr);
+    double pow10(int n);
 
     QString calculateHeaderHash() const;
 

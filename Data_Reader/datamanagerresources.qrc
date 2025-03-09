@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/images">
-        <file>stylesheet-branch-closed.png</file>
-        <file>stylesheet-branch-open.png</file>
-        <file>stylesheet-branch-end.png</file>
-        <file>stylesheet-branch-more.png</file>
-        <file>stylesheet-vline.png</file>
-    </qresource>
-</RCC>

@@ -111,6 +111,8 @@ set(PROJECT_SOURCES
     view_utilities.cpp
     view.cpp
     view_event_handlers.cpp
+    view_callouts.cpp
+    view_old_special_chart_constructors.cpp
 )
 
 set(PROJECT_HEADERS
