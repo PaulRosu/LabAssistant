@@ -126,14 +126,6 @@ View::View(QWidget *parent, QString s_path)
   
    // test the new csv parser
   qDebug() << "CSV file dropped: using new CSV parser";
-
-    // Disconnect existing connections to prevent duplicates
-    // disconnect(&data, &Data::dataReady, this, &View::constructDataChart);
-    // disconnect(&data, &Data::parsingProgress, this, &View::handleParsingProgress);
-    
-    // Connect signals before parsing
-    // connect(&data, &Data::dataReady, this, &View::constructDataChart);
-    // connect(&data, &Data::parsingProgress, this, &View::handleParsingProgress);
     
     // Set file info and parse
     this->data.fi = fi;

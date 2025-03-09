@@ -64,6 +64,7 @@ class Data : public QObject
     QFileInfo fi;
     void parseBLF(QFileInfo file);
     void parseCSV(QFileInfo file);
+    void parseFullCSV(QFileInfo file);
     void initializeCsvSettings(const QString& csvPath);
 
     //    QHash<QString, QList<QPointF>> *SysVars;
@@ -77,6 +78,7 @@ class Data : public QObject
     void filesReceived(QList<QFileInfo> fileList);
     void updateSignalCheckState(qint32 msgId, QString signalName, bool boolCheckState);
     void updateSysVarCheckState(QString sysVarName, bool boolCheckState);
+    void updateDataType(QString varName, DataType newType);
     bool readBlfUUID(QFileInfo file);
     void saveDBC();
     void loadDBC();

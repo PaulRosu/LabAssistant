@@ -15,7 +15,7 @@ data_Dialog::data_Dialog(QWidget *parent)
   setAcceptDrops(true);
 
   ui->setupUi(this);
-  ui->treeWidget->setColumnCount(6);
+  ui->treeWidget->setColumnCount(2);
   ui->axesTable->verticalHeader()->hide();
   ui->seriesTable->verticalHeader()->hide();
 
@@ -25,12 +25,11 @@ data_Dialog::data_Dialog(QWidget *parent)
   ui->buttonBox->button(QDialogButtonBox::Save)->setText("Save settings");
   ui->buttonBox->button(QDialogButtonBox::Retry)->setText("Reload data file");
 
-  ui->treeWidget->setHeaderLabels(QStringList() << ""
-                                                << ""
-                                                << ""
-                                                << ""
-                                                << ""
-                                                << "");
+  ui->treeWidget->setHeaderLabels(QStringList() << "Name" << "Data Type");
+
+  // Set column widths
+  ui->treeWidget->setColumnWidth(0, 250);
+  ui->treeWidget->setColumnWidth(1, 150);
 
   connect(ui->treeWidget, &QTreeWidget::itemChanged, this,
           &data_Dialog::treeWidgetItemChanged);
@@ -1160,9 +1159,13 @@ QTreeWidgetItem *data_Dialog::addTreeChild(QTreeWidgetItem *parent,
 
 void data_Dialog::resizeTreeWidgetColumns()
 {
-  for (int i = 0; i < ui->treeWidget->columnCount(); ++i)
-  {
-    ui->treeWidget->resizeColumnToContents(i);
+  // Resize columns to fit content
+  ui->treeWidget->resizeColumnToContents(0);
+  
+  // Ensure minimum width for data type column
+  int typeColumnWidth = ui->treeWidget->columnWidth(1);
+  if (typeColumnWidth < 150) {
+    ui->treeWidget->setColumnWidth(1, 150);
   }
 }
 
@@ -1210,7 +1213,7 @@ QTreeWidgetItem *data_Dialog::insertSysVar(QString SysVarString, bool checked) {
 }
 
 // New function for CSV variables
-QTreeWidgetItem *data_Dialog::insertCSVVar(QString name, bool checked)
+QTreeWidgetItem *data_Dialog::insertCSVVar(QString name, bool checked, DataType dataType)
 {
   QTreeWidgetItem *root = getRootItem("CSV");
   if (!root)
@@ -1230,8 +1233,55 @@ QTreeWidgetItem *data_Dialog::insertCSVVar(QString name, bool checked)
   QString fullName = "CSV::" + item->text(0);
   item->setData(0, Qt::UserRole + 1, QVariant::fromValue(fullName));
   item->setData(0, Qt::UserRole + 2, QVariant::fromValue(2));
+  
+  // Store the data type
+  item->setData(0, Qt::UserRole + 3, QVariant::fromValue(static_cast<int>(dataType)));
+  
+  qDebug() << "insertCSVVar: Creating item for" << fullName << "with data type:" << static_cast<int>(dataType);
+
+  // Create a combo box for data type selection in column 1
+  QComboBox *typeCombo = new QComboBox();
+  typeCombo->addItem("Numeric", static_cast<int>(DataType::Numeric));
+  typeCombo->addItem("Operating Mode", static_cast<int>(DataType::OperatingMode));
+  typeCombo->addItem("Error", static_cast<int>(DataType::Error));
+  typeCombo->addItem("Date/Time", static_cast<int>(DataType::DateTime));
+  typeCombo->addItem("Not Used", static_cast<int>(DataType::NotUsed));
+  typeCombo->addItem("Unknown", static_cast<int>(DataType::Unknown));
+  
+  // Set the current selection based on the data type
+  int index = typeCombo->findData(static_cast<int>(dataType));
+  if (index != -1) {
+    typeCombo->setCurrentIndex(index);
+    qDebug() << "insertCSVVar: Setting combo box index to" << index << "for data type:" << static_cast<int>(dataType);
+  } else {
+    qDebug() << "insertCSVVar: Could not find index for data type:" << static_cast<int>(dataType);
+    typeCombo->setCurrentIndex(typeCombo->findData(static_cast<int>(DataType::Unknown)));
+  }
+  
+  // Connect the combo box signal to handle changes
+  connect(typeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), 
+          [this, item, fullName](int index) {
+              QComboBox *combo = qobject_cast<QComboBox*>(sender());
+              if (combo) {
+                  DataType newType = static_cast<DataType>(combo->itemData(index).toInt());
+                  item->setData(0, Qt::UserRole + 3, QVariant::fromValue(static_cast<int>(newType)));
+                  qDebug() << "Combo box changed: Setting data type for" << fullName << "to" << static_cast<int>(newType);
+                  
+                  // Ensure the signal is emitted with the correct parameters
+                  qDebug() << "Emitting dataTypeChanged signal for" << fullName << "with type" << static_cast<int>(newType);
+                  emit dataTypeChanged(fullName, newType);
+              }
+          });
+  
+  ui->treeWidget->setItemWidget(item, 1, typeCombo);
 
   return item;
+}
+
+// Overload for backward compatibility
+QTreeWidgetItem *data_Dialog::insertCSVVar(QString name, bool checked)
+{
+  return insertCSVVar(name, checked, DataType::Unknown);
 }
 
 void data_Dialog::insertSerie(const QString &source, const QString &name,
@@ -1666,8 +1716,7 @@ void data_Dialog::loadSeriesTable(QSettings *settings)
       // For column 6, also restore background color
       if (j == 6)
       {
-        QStringList colorParts =
-            settingsToUse->value(QString("cell_bgcolor_%1_%2").arg(i).arg(j), "#FFFFFF")
+        QStringList colorParts = settingsToUse->value(QString("cell_bgcolor_%1_%2").arg(i).arg(j), "#FFFFFF")
                 .toString()
                 .split(',');
         QColor color = QColor(colorParts[0].toInt(), colorParts[1].toInt(),

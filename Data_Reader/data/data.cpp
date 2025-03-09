@@ -23,6 +23,8 @@ Data::Data() {
                    this, &Data::updateSignalCheckState);
   QObject::connect(this->DataManager, &data_Dialog::sysVarCheckStateUpdated,
                    this, &Data::updateSysVarCheckState);
+  QObject::connect(this->DataManager, &data_Dialog::dataTypeChanged,
+                   this, &Data::updateDataType);
   QObject::connect(BlfFileParser, &BlfParser::parsingCompleted, this,
                    &Data::BlfParsingComplete);
   QObject::connect(BlfFileParser, &BlfParser::parsingProgress, this,
@@ -47,56 +49,24 @@ void Data::saveDBC() {
 
   // If current file is CSV, save CSV settings
   if (fi.suffix().toLower() == "csv") {
-    // Update CSVParser data from SysVars before saving
-    auto csvData = CsvFileParser->getData();
-    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
-      QString fullVarName = "CSV::" + it.key();
-      if (SysVars->contains(fullVarName)) {
-        it.value().checked = SysVars->value(fullVarName).checked;
-      }
-    }
-
-    // Save local settings
-    QString localSettingsPath = getCsvSettingsPath(fi.filePath());
-    QSettings localSettings(localSettingsPath, QSettings::IniFormat);
-    localSettings.clear();
-    
-    CsvFileParser->saveSettings(&localSettings);
-    this->DataManager->saveAxes(&localSettings);
-    this->DataManager->saveSeriesTable(&localSettings);
-    localSettings.sync();
-    
-    qDebug() << "Saved local CSV settings to:" << localSettingsPath;
-
-    // Save template
-    QString fingerprintCode = CsvFileParser->generateFingerprintCode();
-    QString templatePath = getTemplatesFolderPath() + fingerprintCode + ".ini";
-    
-    QDir().mkpath(getTemplatesFolderPath());
-    QSettings templateSettings(templatePath, QSettings::IniFormat);
-    templateSettings.clear();
-    
-    CsvFileParser->saveSettings(&templateSettings);
-    this->DataManager->saveAxes(&templateSettings);
-    this->DataManager->saveSeriesTable(&templateSettings);
-    templateSettings.sync();
-    
-    qDebug() << "Saved CSV template to:" << templatePath;
+    qDebug() << "Current file is CSV, saving CSV settings";
+    saveCsvSettings(fi.filePath());
     return;
   }
 
-  // Otherwise handle BLF/other files as before
-  saveMessages(*this->DataManager->settingsTemplate, this->DBC);
-  saveSysVars(*this->DataManager->settingsTemplate, *SysVars);
-  this->DataManager->saveAxes(this->DataManager->settingsTemplate);
-  this->DataManager->saveSeriesTable(this->DataManager->settingsTemplate);
-  this->DataManager->settingsTemplate->sync();
+  // For BLF files, save DBC settings
+  QSettings settings(QSettings::IniFormat, QSettings::UserScope, "LabAssistant",
+                     "LabAssistant");
 
-  saveMessages(*this->DataManager->settings, this->DBC);
-  saveSysVars(*this->DataManager->settings, *SysVars);
-  this->DataManager->saveAxes(this->DataManager->settings);
-  this->DataManager->saveSeriesTable(this->DataManager->settings);
-  this->DataManager->settings->sync();
+  settings.beginGroup("DBC");
+  saveMessages(settings, DBC);
+  settings.endGroup();
+
+  settings.beginGroup("SysVars");
+  saveSysVars(settings, *SysVars);
+  settings.endGroup();
+
+  settings.sync();
 }
 
 void updateParentState(QTreeWidgetItem *item) {
@@ -173,8 +143,8 @@ void Data::reload() {
     QTableWidget* table = this->DataManager->ui->seriesTable;
     table->setRowCount(0);
     
-    // Re-parse the CSV file
-    parseCSV(fi);
+    // Re-parse the CSV file - use full parsing for reload
+    parseFullCSV(fi);
   } else if (fi.suffix().toLower() == "blf") {
     // For BLF files, only reload if we have a valid file
     if (!fi.exists()) {
@@ -831,21 +801,71 @@ void Data::parseCSV(QFileInfo file) {
     this->fi = file;
     timer.start();
     
+    // Check if settings exist for this file
+    QString localSettingsPath = getCsvSettingsPath(file.filePath());
+    bool settingsExist = QFile::exists(localSettingsPath);
+    
+    qDebug() << "Settings path:" << localSettingsPath;
+    qDebug() << "Settings exist:" << settingsExist;
+    
     // First parse the CSV file to get structure and fingerprint
-    if (!CsvFileParser->parseFile(file.filePath())) {
+    // For initial parsing, limit to 100 rows for data type detection
+    if (!CsvFileParser->parseFile(file.filePath(), 100)) {
         qDebug() << "Failed to parse CSV file";
         return;
     }
     qDebug() << "CSV file parsed successfully";
     
+    // Debug: Print data in CSVParser after initial parsing
+    auto csvData = CsvFileParser->getData();
+    qDebug() << "\n=== Data in CSVParser after initial parsing ===";
+    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+        qDebug() << "Column:" << it.key() 
+                 << "Data Type:" << static_cast<int>(it.value().dataType)
+                 << "Points:" << it.value().points.size();
+    }
+    
     // Initialize settings objects if needed, but don't overwrite existing settings
-    QString localSettingsPath = getCsvSettingsPath(file.filePath());
-    if (!this->DataManager->settings || !QFile::exists(localSettingsPath)) {
+    if (!this->DataManager->settings || !settingsExist) {
         initializeCsvSettings(file.filePath());
     }
     
     // Load settings after parsing but before creating UI elements
     loadCsvSettings(file.filePath());
+    
+    // If we have checked columns, parse the full file to get all data for those columns only
+    QStringList checkedColumns;
+    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+        if (it.value().checked) {
+            checkedColumns.append(it.key());
+        }
+    }
+    
+    if (!checkedColumns.isEmpty()) {
+        qDebug() << "Found" << checkedColumns.size() << "checked columns, parsing full file to get data for:" << checkedColumns.join(", ");
+        
+        // Clear existing points before parsing
+        for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+            it.value().points.clear();
+        }
+        
+        if (!CsvFileParser->parseFile(file.filePath(), 0, checkedColumns)) {  // 0 means no limit, only process checked columns
+            qDebug() << "Failed to parse full CSV file";
+            return;
+        }
+        qDebug() << "Full CSV file parsed successfully";
+        
+        // Debug: Print data in CSVParser after full parsing
+        qDebug() << "\n=== Data in CSVParser after full parsing ===";
+        for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+            qDebug() << "Column:" << it.key() 
+                     << "Data Type:" << static_cast<int>(it.value().dataType)
+                     << "Checked:" << it.value().checked
+                     << "Points:" << it.value().points.size();
+        }
+    } else {
+        qDebug() << "No checked columns found, skipping full file parsing";
+    }
     
     // Now proceed with creating UI elements
     CsvParsingComplete();
@@ -858,6 +878,14 @@ void Data::CsvParsingComplete() {
     
     // Get the parsed data with potentially loaded check states
     auto csvData = CsvFileParser->getData();
+    
+    qDebug() << "\n=== Data Types in CSVParser ===";
+    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+        qDebug() << "Column:" << it.key() 
+                 << "Data Type:" << static_cast<int>(it.value().dataType)
+                 << "Checked:" << it.value().checked
+                 << "Points:" << it.value().points.size();
+    }
     
     // Block tree signals during updates
     this->DataManager->ui->treeWidget->blockSignals(true);
@@ -892,14 +920,31 @@ void Data::CsvParsingComplete() {
         // Get the check state from the loaded settings
         bool isChecked = serie.checked;
         
-        // Add to SysVars with the correct check state
+        // Skip columns with NotUsed data type when adding points
+        if (serie.dataType == DataType::NotUsed) {
+            qDebug() << "Skipping NotUsed column:" << varName;
+            serie.points.clear();  // Clear any points that might have been added
+        }
+        
+        // Skip DateTime columns when adding points
+        if (serie.dataType == DataType::DateTime) {
+            qDebug() << "Skipping DateTime column:" << varName;
+            serie.points.clear();  // Clear any points that might have been added
+        }
+        
+        qDebug() << "Adding to SysVars:" << varName 
+                 << "Data Type:" << static_cast<int>(serie.dataType)
+                 << "Checked:" << isChecked;
+        
+        // Add to SysVars with the correct check state and data type
         SysVars->insert(varName, serie);
         
-        // Add to UI tree with the correct check state
-        QTreeWidgetItem* item = this->DataManager->insertCSVVar(it.key(), isChecked);
+        // Add to UI tree with the correct check state and data type
+        QTreeWidgetItem* item = this->DataManager->insertCSVVar(it.key(), isChecked, serie.dataType);
         if (item) {
             item->setCheckState(0, isChecked ? Qt::Checked : Qt::Unchecked);
-            qDebug() << "Inserting" << varName << "with check state:" << isChecked;
+            qDebug() << "Inserting" << varName << "with check state:" << isChecked 
+                     << "and data type:" << static_cast<int>(serie.dataType);
             
             if (isChecked) {
                 checkedColumns.append(varName);
@@ -908,29 +953,67 @@ void Data::CsvParsingComplete() {
     }
     
     // Update parent states in tree
-    root = this->DataManager->getRootItem("CSV");
-    if (root) {
-        updateParentState(root);
+    this->DataManager->ui->treeWidget->blockSignals(false);
+    
+    // Make sure the tree columns are properly sized
+    this->DataManager->resizeTreeWidgetColumns();
+    
+    // Debug: Print data types in SysVars after CsvParsingComplete
+    qDebug() << "\n=== Data Types in SysVars after CsvParsingComplete ===";
+    for (auto it = SysVars->begin(); it != SysVars->end(); ++it) {
+        if (it.key().startsWith("CSV::")) {
+            qDebug() << "Column:" << it.key() 
+                     << "Data Type:" << static_cast<int>(it.value().dataType)
+                     << "Checked:" << it.value().checked;
+        }
     }
     
     // Second pass: Add checked items to series table
     // Block signals during series table updates
     this->DataManager->ui->seriesTable->blockSignals(true);
     
+    // Clear existing series table
+    this->DataManager->ui->seriesTable->setRowCount(0);
+    
+    qDebug() << "\n=== Adding checked columns to series table ===";
+    qDebug() << "Number of checked columns:" << checkedColumns.size();
+    
     for(const QString& varName : checkedColumns) {
         qDebug() << "Adding checked item to series table:" << varName;
         try {
             if (SysVars->contains(varName)) {
                 const DataSerie& serie = SysVars->value(varName);
-                qDebug() << "serie" << serie.points.size();
-                this->DataManager->insertSerie(
-                    fi.fileName(),           // source
-                    varName,                 // name
-                    serie.points.size(),     // count
-                    1.0,                     // default factor
-                    0.0                      // default offset
-                );
-                qDebug() << "Successfully added" << varName << "to series table";
+                
+                // Skip NotUsed and DateTime columns
+                if (serie.dataType == DataType::NotUsed || serie.dataType == DataType::DateTime) {
+                    qDebug() << "Skipping NotUsed/DateTime column:" << varName;
+                    continue;
+                }
+                
+                qDebug() << "Serie" << varName 
+                         << "has" << serie.points.size() << "points"
+                         << "data type:" << static_cast<int>(serie.dataType);
+                
+                // Only add series with points
+                if (serie.points.size() > 0) {
+                    this->DataManager->insertSerie(
+                        fi.fileName(),           // source
+                        varName,                 // name
+                        serie.points.size(),     // count
+                        1.0,                     // default factor
+                        0.0                      // default offset
+                    );
+                    qDebug() << "Successfully added" << varName << "to series table";
+                } else {
+                    qDebug() << "Skipping empty series:" << varName << " - no points!";
+                    
+                    // Debug: Print more information about the empty series
+                    qDebug() << "  Data type:" << static_cast<int>(serie.dataType);
+                    qDebug() << "  Is operating mode series:" << serie.isOperatingModeSeries;
+                    qDebug() << "  Operating modes count:" << serie.operatingModes.size();
+                }
+            } else {
+                qDebug() << "Error: Variable" << varName << "not found in SysVars";
             }
         } catch (const std::exception& e) {
             qDebug() << "Error adding" << varName << "to series table:" << e.what();
@@ -940,11 +1023,12 @@ void Data::CsvParsingComplete() {
     
     // Unblock signals
     this->DataManager->ui->seriesTable->blockSignals(false);
-    this->DataManager->ui->treeWidget->blockSignals(false);
     
+    // Update the UI
     this->fileParsingProgress(0);
     this->DataManager->ui->progressBar->hide();
-    this->DataManager->hideEmptySeries();
+    
+    // Emit signal that data is ready
     emit dataReady();
 }
 
@@ -1003,55 +1087,109 @@ QString Data::getCsvSettingsPath(const QString& csvPath) {
 
 void Data::loadCsvSettings(const QString& csvPath) {
     QString localSettingsPath = getCsvSettingsPath(csvPath);
-    QString fingerprint = CsvFileParser->generateFingerprint();
     
     qDebug() << "\n=== Loading CSV Settings ===";
     qDebug() << "Loading CSV settings for file:" << csvPath;
-    qDebug() << "Generated fingerprint:" << fingerprint;
-    qDebug() << "Looking for settings at:" << localSettingsPath;
+    qDebug() << "Settings path:" << localSettingsPath;
     
-    // First try to load local settings
-    if (QFile::exists(localSettingsPath)) {
-        QSettings localSettings(localSettingsPath, QSettings::IniFormat);
-        
-        // Verify fingerprint matches
-        localSettings.beginGroup("CSVFormat");
-        QString storedFingerprint = localSettings.value("fingerprint").toString();
-        localSettings.endGroup();
-        
-        qDebug() << "Found local settings with fingerprint:" << storedFingerprint;
-        
-        if (fingerprint == storedFingerprint) {
-            qDebug() << "Loading local settings from:" << localSettingsPath;
-            
-            // Load settings into CsvFileParser
-            CsvFileParser->loadSettings(&localSettings);
-            
-            // Load settings into DataManager
-            if (!this->DataManager->settings) {
-                this->DataManager->settings = new QSettings(localSettingsPath, QSettings::IniFormat);
-            }
-            copySettingsToDataManager(&localSettings);
-            
-            // Load UI components
-            this->DataManager->loadAxes(&localSettings);
-            this->DataManager->loadSeriesTable(&localSettings);
-            
-            // Debug: Print loaded states
-            auto csvData = CsvFileParser->getData();
-            qDebug() << "\nLoaded check states:";
-            for (auto it = csvData->begin(); it != csvData->end(); ++it) {
-                qDebug() << "  Column:" << it.key() << "Check state:" << it.value().checked;
-            }
-            return;  // Successfully loaded local settings, we're done
-        } else {
-            qDebug() << "Fingerprint mismatch - local:" << storedFingerprint << "current:" << fingerprint;
-        }
-    } else {
+    // Check if settings exist
+    if (!QFile::exists(localSettingsPath)) {
         qDebug() << "No local settings file found";
+        return;
     }
     
-    // If no local settings, try template
+    // Create settings object
+    QSettings localSettings(localSettingsPath, QSettings::IniFormat);
+    
+    // Verify fingerprint matches
+    localSettings.beginGroup("CSVFormat");
+    QString storedFingerprint = localSettings.value("fingerprint").toString();
+    localSettings.endGroup();
+    
+    // Generate current fingerprint
+    QString fingerprint = CsvFileParser->generateFingerprint();
+    
+    qDebug() << "Found local settings with fingerprint:" << storedFingerprint;
+    qDebug() << "Current fingerprint:" << fingerprint;
+    
+    // Debug: Print data types in CSVParser before loading
+    auto csvData = CsvFileParser->getData();
+    qDebug() << "\n=== Data in CSVParser before loading settings ===";
+    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+        qDebug() << "Column:" << it.key() 
+                 << "Data Type:" << static_cast<int>(it.value().dataType);
+    }
+    
+    if (fingerprint == storedFingerprint) {
+        qDebug() << "Loading local settings from:" << localSettingsPath;
+        
+        // Load settings into CsvFileParser
+        CsvFileParser->loadSettings(&localSettings);
+        
+        // Load additional data types from CSVData group if available
+        localSettings.beginGroup("CSVData");
+        for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+            QString columnName = it.key();
+            // Check if we have data type information
+            if (localSettings.contains(QString("dataType/%1").arg(columnName))) {
+                int dataTypeValue = localSettings.value(QString("dataType/%1").arg(columnName), 
+                                                      static_cast<int>(DataType::Unknown)).toInt();
+                (*csvData)[columnName].dataType = static_cast<DataType>(dataTypeValue);
+                
+                // Set operating mode flag if needed
+                if ((*csvData)[columnName].dataType == DataType::OperatingMode) {
+                    (*csvData)[columnName].isOperatingModeSeries = true;
+                }
+                
+                qDebug() << "Loaded data type from CSVData for column:" << columnName 
+                         << "Type:" << dataTypeValue;
+            }
+            
+            // Check if we have checked state information
+            if (localSettings.contains(QString("checked/%1").arg(columnName))) {
+                bool checked = localSettings.value(QString("checked/%1").arg(columnName), false).toBool();
+                (*csvData)[columnName].checked = checked;
+                
+                qDebug() << "Loaded checked state from CSVData for column:" << columnName 
+                         << "Checked:" << checked;
+            }
+        }
+        localSettings.endGroup();
+        
+        // Load settings into DataManager
+        if (!this->DataManager->settings) {
+            this->DataManager->settings = new QSettings(localSettingsPath, QSettings::IniFormat);
+        }
+        copySettingsToDataManager(&localSettings);
+        
+        // Load UI components
+        this->DataManager->loadAxes(&localSettings);
+        this->DataManager->loadSeriesTable(&localSettings);
+        
+        // Debug: Print loaded states
+        qDebug() << "\n=== Data in CSVParser after loading settings ===";
+        for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+            qDebug() << "Column:" << it.key() 
+                     << "Check state:" << it.value().checked
+                     << "Data type:" << static_cast<int>(it.value().dataType);
+        }
+        
+        // Debug: Print data types in SysVars after loading
+        qDebug() << "\n=== Data Types in SysVars after loading ===";
+        for (auto it = SysVars->begin(); it != SysVars->end(); ++it) {
+            if (it.key().startsWith("CSV::")) {
+                qDebug() << "Column:" << it.key() 
+                         << "Data Type:" << static_cast<int>(it.value().dataType);
+            }
+        }
+        
+        qDebug() << "Successfully loaded settings from:" << localSettingsPath;
+        return;  // Successfully loaded local settings, we're done
+    } else {
+        qDebug() << "Fingerprint mismatch - local:" << storedFingerprint << "current:" << fingerprint;
+    }
+    
+    // If we get here, try to find a matching template
     QString templatePath = findMatchingTemplateSettings(fingerprint);
     if (!templatePath.isEmpty()) {
         qDebug() << "Found matching template:" << templatePath;
@@ -1059,6 +1197,36 @@ void Data::loadCsvSettings(const QString& csvPath) {
         
         // Load template settings into CsvFileParser
         CsvFileParser->loadSettings(&templateSettings);
+        
+        // Load additional data types from CSVData group if available
+        templateSettings.beginGroup("CSVData");
+        for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+            QString columnName = it.key();
+            // Check if we have data type information
+            if (templateSettings.contains(QString("dataType/%1").arg(columnName))) {
+                int dataTypeValue = templateSettings.value(QString("dataType/%1").arg(columnName), 
+                                                      static_cast<int>(DataType::Unknown)).toInt();
+                (*csvData)[columnName].dataType = static_cast<DataType>(dataTypeValue);
+                
+                // Set operating mode flag if needed
+                if ((*csvData)[columnName].dataType == DataType::OperatingMode) {
+                    (*csvData)[columnName].isOperatingModeSeries = true;
+                }
+                
+                qDebug() << "Loaded data type from template for column:" << columnName 
+                         << "Type:" << dataTypeValue;
+            }
+            
+            // Check if we have checked state information
+            if (templateSettings.contains(QString("checked/%1").arg(columnName))) {
+                bool checked = templateSettings.value(QString("checked/%1").arg(columnName), false).toBool();
+                (*csvData)[columnName].checked = checked;
+                
+                qDebug() << "Loaded checked state from template for column:" << columnName 
+                         << "Checked:" << checked;
+            }
+        }
+        templateSettings.endGroup();
         
         // Load template settings into DataManager
         if (!this->DataManager->settings) {
@@ -1070,9 +1238,9 @@ void Data::loadCsvSettings(const QString& csvPath) {
         this->DataManager->loadAxes(&templateSettings);
         this->DataManager->loadSeriesTable(&templateSettings);
         
-        qDebug() << "Loaded settings from template";
+        qDebug() << "Successfully loaded settings from template:" << templatePath;
     } else {
-        qDebug() << "No settings found - waiting for user to save settings";
+        qDebug() << "No matching template found";
     }
 }
 
@@ -1241,10 +1409,213 @@ void Data::initializeCsvSettings(const QString& csvPath) {
     this->DataManager->settings = new QSettings(localSettingsPath, QSettings::IniFormat);
     this->DataManager->settingsTemplate = new QSettings(templatePath, QSettings::IniFormat);
     
+    // Save initial settings
+    saveCsvSettings(csvPath);
+    
     qDebug() << "\nAfter initialization:";
     qDebug() << "Settings path:" << this->DataManager->settings->fileName();
     qDebug() << "Template path:" << this->DataManager->settingsTemplate->fileName();
     qDebug() << "Settings status:" << this->DataManager->settings->status();
+}
+
+void Data::updateDataType(QString varName, DataType newType) {
+    qDebug() << "\n=== Updating Data Type ===";
+    qDebug() << "Updating data type for" << varName << "to" << static_cast<int>(newType);
+    
+    if (SysVars->contains(varName)) {
+        // Update the data type in the SysVars hash
+        (*SysVars)[varName].dataType = newType;
+        
+        // Update isOperatingModeSeries flag if needed
+        if (newType == DataType::OperatingMode) {
+            (*SysVars)[varName].isOperatingModeSeries = true;
+        } else {
+            (*SysVars)[varName].isOperatingModeSeries = false;
+        }
+        
+        // Clear points if the data type is NotUsed or DateTime
+        if (newType == DataType::NotUsed || newType == DataType::DateTime) {
+            qDebug() << "Clearing points for" << varName << "as it is now" 
+                     << (newType == DataType::NotUsed ? "NotUsed" : "DateTime");
+            (*SysVars)[varName].points.clear();
+        }
+        
+        // Update the CSVParser's data as well
+        if (varName.startsWith("CSV::")) {
+            QString columnName = varName.mid(5); // Remove "CSV::" prefix
+            auto csvData = CsvFileParser->getData();
+            if (csvData->contains(columnName)) {
+                (*csvData)[columnName].dataType = newType;
+                (*csvData)[columnName].isOperatingModeSeries = (newType == DataType::OperatingMode);
+                qDebug() << "Updated CSVParser data for column:" << columnName 
+                         << "dataType:" << static_cast<int>(newType);
+            }
+            
+            // Save the settings to persist the change
+            saveCsvSettings(fi.filePath());
+        }
+        
+        qDebug() << "Updated data type for" << varName << "to" << static_cast<int>(newType);
+    } else {
+        qDebug() << "Error: Variable" << varName << "not found in SysVars";
+    }
+}
+
+void Data::saveCsvSettings(const QString& csvPath) {
+    QString localSettingsPath = getCsvSettingsPath(csvPath);
+    
+    qDebug() << "\n=== Saving CSV Settings ===";
+    qDebug() << "Saving CSV settings for file:" << csvPath;
+    qDebug() << "Settings path:" << localSettingsPath;
+    
+    // Debug: Print data types in SysVars before saving
+    qDebug() << "\n=== Data Types in SysVars before saving ===";
+    for (auto it = SysVars->begin(); it != SysVars->end(); ++it) {
+        if (it.key().startsWith("CSV::")) {
+            qDebug() << "Column:" << it.key() 
+                     << "Data Type:" << static_cast<int>(it.value().dataType)
+                     << "Checked:" << it.value().checked;
+        }
+    }
+    
+    // Create settings object
+    QSettings localSettings(localSettingsPath, QSettings::IniFormat);
+    
+    // Clear existing settings
+    localSettings.clear();
+    
+    // First, update the CSVParser's data with the current data types from SysVars
+    auto csvData = CsvFileParser->getData();
+    for (auto it = SysVars->begin(); it != SysVars->end(); ++it) {
+        if (it.key().startsWith("CSV::")) {
+            QString columnName = it.key().mid(5); // Remove "CSV::" prefix
+            if (csvData->contains(columnName)) {
+                // Update the data type in the CSVParser's data
+                (*csvData)[columnName].dataType = it.value().dataType;
+                (*csvData)[columnName].isOperatingModeSeries = it.value().isOperatingModeSeries;
+                (*csvData)[columnName].checked = it.value().checked;
+                
+                qDebug() << "Updating CSVParser data for column:" << columnName 
+                         << "dataType:" << static_cast<int>(it.value().dataType)
+                         << "checked:" << it.value().checked;
+            }
+        }
+    }
+    
+    // Now save the CSV format and data
+    CsvFileParser->saveSettings(&localSettings);
+    
+    // Save additional data from SysVars
+    localSettings.beginGroup("CSVData");
+    for (auto it = SysVars->begin(); it != SysVars->end(); ++it) {
+        if (it.key().startsWith("CSV::")) {
+            QString columnName = it.key().mid(5); // Remove "CSV::" prefix
+            localSettings.setValue(QString("checked/%1").arg(columnName), it.value().checked);
+            localSettings.setValue(QString("dataType/%1").arg(columnName), static_cast<int>(it.value().dataType));
+            
+            qDebug() << "Saving SysVars data for column:" << columnName 
+                     << "checked:" << it.value().checked 
+                     << "dataType:" << static_cast<int>(it.value().dataType);
+        }
+    }
+    localSettings.endGroup();
+    
+    // Sync to ensure settings are written to disk
+    localSettings.sync();
+    
+    // Debug: Print data types in CSVParser after saving
+    qDebug() << "\n=== Data Types in CSVParser after saving ===";
+    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+        qDebug() << "Column:" << it.key() 
+                 << "Data Type:" << static_cast<int>(it.value().dataType)
+                 << "Checked:" << it.value().checked;
+    }
+    
+    qDebug() << "CSV settings saved successfully";
+}
+
+void Data::parseFullCSV(QFileInfo file) {
+    qDebug() << "\nParsing full CSV file for data loading";
+    
+    // Save the current checked status and data types before parsing
+    QHash<QString, bool> checkedStatus;
+    QHash<QString, DataType> dataTypes;
+    QStringList checkedColumns;
+    
+    // Store the current checked status and data types
+    for (auto it = SysVars->begin(); it != SysVars->end(); ++it) {
+        if (it.key().startsWith("CSV::")) {
+            QString columnName = it.key().mid(5); // Remove "CSV::" prefix
+            checkedStatus[it.key()] = it.value().checked;
+            dataTypes[it.key()] = it.value().dataType;
+            
+            if (it.value().checked) {
+                checkedColumns.append(columnName);
+            }
+            
+            qDebug() << "Saving state for" << it.key() 
+                     << "checked:" << it.value().checked
+                     << "dataType:" << static_cast<int>(it.value().dataType);
+        }
+    }
+    
+    timer.start();
+    
+    // Parse the entire CSV file to load all data for checked columns only
+    if (checkedColumns.isEmpty()) {
+        qDebug() << "No checked columns found, skipping full file parsing";
+        return;
+    }
+    
+    qDebug() << "Found" << checkedColumns.size() << "checked columns, parsing full file to get data for:" << checkedColumns.join(", ");
+    
+    // Clear existing points before parsing
+    auto csvData = CsvFileParser->getData();
+    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+        it.value().points.clear();
+    }
+    
+    if (!CsvFileParser->parseFile(file.filePath(), 0, checkedColumns)) {  // 0 means no limit, only process checked columns
+        qDebug() << "Failed to parse full CSV file";
+        return;
+    }
+    
+    qDebug() << "Full CSV file parsed successfully in" << timer.elapsed() << "ms";
+    
+    // Debug: Print data in CSVParser after parsing
+    qDebug() << "\n=== Data in CSVParser after parsing ===";
+    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+        qDebug() << "Column:" << it.key() 
+                 << "Data Type:" << static_cast<int>(it.value().dataType)
+                 << "Points:" << it.value().points.size();
+    }
+    
+    // Update the CSVParser's data with the saved checked status and data types
+    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+        QString varName = "CSV::" + it.key();
+        if (checkedStatus.contains(varName)) {
+            (*csvData)[it.key()].checked = checkedStatus[varName];
+            qDebug() << "Restoring checked status for" << varName 
+                     << "to" << checkedStatus[varName];
+        }
+        if (dataTypes.contains(varName)) {
+            (*csvData)[it.key()].dataType = dataTypes[varName];
+            qDebug() << "Restoring data type for" << varName 
+                     << "to" << static_cast<int>(dataTypes[varName]);
+        }
+    }
+    
+    // Debug: Print data in CSVParser after restoring state
+    qDebug() << "\n=== Data in CSVParser after restoring state ===";
+    for (auto it = csvData->begin(); it != csvData->end(); ++it) {
+        qDebug() << "Column:" << it.key() 
+                 << "Data Type:" << static_cast<int>(it.value().dataType)
+                 << "Checked:" << it.value().checked
+                 << "Points:" << it.value().points.size();
+    }
+    
+    // Now proceed with creating UI elements
+    CsvParsingComplete();
 }
 
 Data::~Data() {
@@ -1253,3 +1624,4 @@ Data::~Data() {
   delete DataManager;
   delete filesList;
 }
+

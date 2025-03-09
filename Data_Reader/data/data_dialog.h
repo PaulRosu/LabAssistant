@@ -3,6 +3,7 @@
 
 #include "dbc_parser/dbciterator.hpp"
 #include "qabstractbutton.h"
+#include "data/data_types.h"
 
 #include <QBrush>
 #include <QComboBox>
@@ -44,6 +45,7 @@ public:
   void insertMessage(BusMessage &message);
   QTreeWidgetItem* insertSysVar(QString name, bool checked);
   QTreeWidgetItem* insertCSVVar(QString name, bool checked);
+  QTreeWidgetItem* insertCSVVar(QString name, bool checked, DataType dataType);
   void insertSerie(const QString &source, const QString &name, int count,
                    double factor = 1, double offset = 0);
   void hideEmptySeries();
@@ -170,6 +172,7 @@ signals:
   void signalCheckStateUpdated(qint32 msgId, QString signalName,
                                bool boolCheckState);
   void sysVarCheckStateUpdated(QString varName, bool boolCheckState);
+  void dataTypeChanged(QString varName, DataType newType);
   void cosmeticReset();
   void dataReset();
   // void axisChanged(QString axisName, QString axisType, QString axisUnit,

@@ -2,6 +2,17 @@
 #define DATA_TYPES_H
 #include "dbc_parser/dbciterator.hpp"
 #include <QtCore>
+
+// Define data types enum
+enum class DataType {
+  Numeric,        // Regular numeric data
+  OperatingMode,  // String data representing operating modes
+  Error,          // String data representing error events
+  DateTime,       // Date/time data
+  NotUsed,        // Data that should be skipped/not used
+  Unknown         // Default/unknown type
+};
+
 class DataSerie
 {
 public:
@@ -14,6 +25,7 @@ public:
   double offset = -1.0;
   QHash<QString, double> operatingModes;
   bool isOperatingModeSeries = false; 
+  DataType dataType = DataType::Unknown;  // Default to unknown type
 
   DataSerie() : checked(false)
   {
