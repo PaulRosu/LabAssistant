@@ -86,7 +86,7 @@ add_compile_definitions(
 )
 
 # Option to disable debug output (equivalent to DEFINES += QT_NO_DEBUG_OUTPUT)
-add_compile_definitions(QT_NO_DEBUG_OUTPUT)
+#add_compile_definitions(QT_NO_DEBUG_OUTPUT)
 
 
 # Ensure proper UI file handling
@@ -104,10 +104,7 @@ add_subdirectory(Data_Reader)
 
 # Main application sources
 set(PROJECT_SOURCES
-    ZS2_Decoder.cpp
     callout.cpp
-    dataloader.cpp
-    haptic_serie.cpp
     main.cpp
     mainwindow.cpp
     messagereceiver.cpp
@@ -116,14 +113,10 @@ set(PROJECT_SOURCES
     view.cpp
     view_event_handlers.cpp
     view_callouts.cpp
-    view_old_special_chart_constructors.cpp
 )
 
 set(PROJECT_HEADERS
-    ZS2_Decoder.h
     callout.h
-    dataloader.h
-    haptic_serie.h
     mainwindow.h
     messagereceiver.h
     qcompressor.h

@@ -17,9 +17,9 @@
 //#include "kfr/dft.hpp"
 //using namespace kfr;
 
-extern QString fileNameArg;
-extern bool argFile;
-extern bool labViewEval;
+ QString fileNameArg;
+bool argFile = false;
+ bool labViewEval;
 
 void setupDebugOutput()
 {

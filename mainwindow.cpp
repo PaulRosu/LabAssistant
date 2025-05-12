@@ -1118,8 +1118,8 @@ bool MainWindow::addTab(QString file_path) {
 
   refreshStatistics();
 
-  if (labViewEval)
-    addTab(file_path);
+  // if (labViewEval)
+  //   addTab(file_path);
 
   // if (graph->data_loader != nullptr){
   //     if ((graph->data_loader->type == dataLoader::LabView)
@@ -1218,33 +1218,33 @@ void MainWindow::graphRangeChanged(qreal min, qreal max, QString name) {
     View *view = qobject_cast<View *>(graph);
     view->userInteracted = false;
 
-    if ((name == "axis_errors") and (view->axis_errors != nullptr))
-      view->axis_errors->setRange(min, max);
-    if ((name == "axis_temperature") and (view->axis_temperature != nullptr))
-      view->axis_temperature->setRange(min, max);
-    if ((name == "axis_humidity") and (view->axis_humidity != nullptr))
-      view->axis_humidity->setRange(min, max);
+    // if ((name == "axis_errors") and (view->axis_errors != nullptr))
+    //   view->axis_errors->setRange(min, max);
+    // if ((name == "axis_temperature") and (view->axis_temperature != nullptr))
+    //   view->axis_temperature->setRange(min, max);
+    // if ((name == "axis_humidity") and (view->axis_humidity != nullptr))
+    //   view->axis_humidity->setRange(min, max);
     if ((name == "axisX") and (view->axisX != nullptr))
       view->axisX->setRange(min, max);
     if ((name == "axisX2") and (view->axisX2 != nullptr))
       view->axisX2->setRange(min, max);
-    if ((name == "axis_current") and (view->axis_current != nullptr))
-      view->axis_current->setRange(min, max);
-    if ((name == "axis_sleep_current") and
-        (view->axis_sleep_current != nullptr))
-      view->axis_sleep_current->setRange(min, max);
-    if ((name == "axis_voltage") and (view->axis_voltage != nullptr))
-      view->axis_voltage->setRange(min, max);
-    if ((name == "axis_opmode") and (view->axis_opmode != nullptr))
-      view->axis_opmode->setRange(min, max);
-    if ((name == "axis_durability_signals") and
-        (view->axis_durability_signals != nullptr))
-      view->axis_durability_signals->setRange(min, max);
+    // if ((name == "axis_current") and (view->axis_current != nullptr))
+    //   view->axis_current->setRange(min, max);
+    // if ((name == "axis_sleep_current") and
+    //     (view->axis_sleep_current != nullptr))
+    //   view->axis_sleep_current->setRange(min, max);
+    // if ((name == "axis_voltage") and (view->axis_voltage != nullptr))
+    //   view->axis_voltage->setRange(min, max);
+    // if ((name == "axis_opmode") and (view->axis_opmode != nullptr))
+    //   view->axis_opmode->setRange(min, max);
+    // if ((name == "axis_durability_signals") and
+    //     (view->axis_durability_signals != nullptr))
+    //   view->axis_durability_signals->setRange(min, max);
 
-    if ((name == "axis_force") and (view->axis_force != nullptr))
-      view->axis_force->setRange(min, max);
-    if ((name == "axis_travel") and (view->axis_travel != nullptr))
-      view->axis_travel->setRange(min, max);
+    // if ((name == "axis_force") and (view->axis_force != nullptr))
+    //   view->axis_force->setRange(min, max);
+    // if ((name == "axis_travel") and (view->axis_travel != nullptr))
+    //   view->axis_travel->setRange(min, max);
 
     view->updateCallouts();
   }
@@ -1277,250 +1277,250 @@ void MainWindow::graphPropertyChanged() {
 }
 
 void MainWindow::axes_link(bool state) {
-  linkedGraphs = state;
+  // linkedGraphs = state;
 
-  if (!state)
-    return;
-  if (ui->tabWidget->currentWidget()->objectName() == "Statistics")
-    return;
+  // if (!state)
+  //   return;
+  // if (ui->tabWidget->currentWidget()->objectName() == "Statistics")
+  //   return;
 
-  int currentTab = ui->tabWidget->currentIndex();
+  // int currentTab = ui->tabWidget->currentIndex();
 
-  auto tab = ui->tabWidget->widget(currentTab)->children();
-  auto current_graph = tab.at(1);
-  View *current_view = qobject_cast<View *>(current_graph);
+  // auto tab = ui->tabWidget->widget(currentTab)->children();
+  // auto current_graph = tab.at(1);
+  // View *current_view = qobject_cast<View *>(current_graph);
 
-  for (int i = ui->tabWidget->count() - 1; i >= 0; i--) {
-    if (i == currentTab)
-      continue;
-    if (ui->tabWidget->widget(i)->objectName() == "Statistics")
-      continue;
+  // for (int i = ui->tabWidget->count() - 1; i >= 0; i--) {
+  //   if (i == currentTab)
+  //     continue;
+  //   if (ui->tabWidget->widget(i)->objectName() == "Statistics")
+  //     continue;
 
-    auto tab = ui->tabWidget->widget(i)->children();
-    auto graph = tab.at(1);
+  //   auto tab = ui->tabWidget->widget(i)->children();
+  //   auto graph = tab.at(1);
 
-    View *view = qobject_cast<View *>(graph);
-    view->userInteracted = false;
+  //   View *view = qobject_cast<View *>(graph);
+  //   view->userInteracted = false;
 
-    if ((view->axis_errors != nullptr) and
-        (current_view->axis_errors != nullptr)) {
-      view->axis_errors->setRange(current_view->axis_errors->min(),
-                                  current_view->axis_errors->max());
-      view->axis_errors->setTickCount(current_view->axis_errors->tickCount());
-    }
+  //   if ((view->axis_errors != nullptr) and
+  //       (current_view->axis_errors != nullptr)) {
+  //     view->axis_errors->setRange(current_view->axis_errors->min(),
+  //                                 current_view->axis_errors->max());
+  //     view->axis_errors->setTickCount(current_view->axis_errors->tickCount());
+  //   }
 
-    if ((view->axis_temperature != nullptr) and
-        (current_view->axis_temperature != nullptr)) {
-      view->axis_temperature->setRange(current_view->axis_temperature->min(),
-                                       current_view->axis_temperature->max());
-      view->axis_temperature->setTickCount(
-          current_view->axis_temperature->tickCount());
-      view->axis_temperature->setLabelsColor(
-          current_view->axis_temperature->labelsColor());
-      view->axis_temperature->setLinePen(
-          current_view->axis_temperature->linePen());
-      view->temperature->setColor(current_view->temperature->color());
-    }
+  //   if ((view->axis_temperature != nullptr) and
+  //       (current_view->axis_temperature != nullptr)) {
+  //     view->axis_temperature->setRange(current_view->axis_temperature->min(),
+  //                                      current_view->axis_temperature->max());
+  //     view->axis_temperature->setTickCount(
+  //         current_view->axis_temperature->tickCount());
+  //     view->axis_temperature->setLabelsColor(
+  //         current_view->axis_temperature->labelsColor());
+  //     view->axis_temperature->setLinePen(
+  //         current_view->axis_temperature->linePen());
+  //     view->temperature->setColor(current_view->temperature->color());
+  //   }
 
-    if ((view->axis_humidity != nullptr) and
-        (current_view->axis_humidity != nullptr)) {
-      view->axis_humidity->setRange(current_view->axis_humidity->min(),
-                                    current_view->axis_humidity->max());
-      view->axis_humidity->setTickCount(
-          current_view->axis_humidity->tickCount());
-      view->axis_humidity->setLabelsColor(
-          current_view->axis_humidity->labelsColor());
-      view->axis_humidity->setLinePen(current_view->axis_humidity->linePen());
-      view->humidity->setColor(current_view->humidity->color());
-    }
+  //   if ((view->axis_humidity != nullptr) and
+  //       (current_view->axis_humidity != nullptr)) {
+  //     view->axis_humidity->setRange(current_view->axis_humidity->min(),
+  //                                   current_view->axis_humidity->max());
+  //     view->axis_humidity->setTickCount(
+  //         current_view->axis_humidity->tickCount());
+  //     view->axis_humidity->setLabelsColor(
+  //         current_view->axis_humidity->labelsColor());
+  //     view->axis_humidity->setLinePen(current_view->axis_humidity->linePen());
+  //     view->humidity->setColor(current_view->humidity->color());
+  //   }
 
-    if ((view->axisX != nullptr) and (current_view->axisX != nullptr))
-      view->axisX->setRange(current_view->axisX->min(),
-                            current_view->axisX->max());
+  //   if ((view->axisX != nullptr) and (current_view->axisX != nullptr))
+  //     view->axisX->setRange(current_view->axisX->min(),
+  //                           current_view->axisX->max());
 
-    if ((view->axisX2 != nullptr) and (current_view->axisX2 != nullptr))
-      view->axisX2->setRange(current_view->axisX2->min(),
-                             current_view->axisX2->max());
+  //   if ((view->axisX2 != nullptr) and (current_view->axisX2 != nullptr))
+  //     view->axisX2->setRange(current_view->axisX2->min(),
+  //                            current_view->axisX2->max());
 
-    if ((view->axis_current != nullptr) and
-        (current_view->axis_current != nullptr)) {
-      view->axis_current->setRange(current_view->axis_current->min(),
-                                   current_view->axis_current->max());
-      view->axis_current->setTickCount(current_view->axis_current->tickCount());
-      view->axis_current->setLabelsColor(
-          current_view->axis_current->labelsColor());
-      view->axis_current->setLinePen(current_view->axis_current->linePen());
-      view->current_activ->setColor(current_view->current_activ->color());
-    }
+  //   if ((view->axis_current != nullptr) and
+  //       (current_view->axis_current != nullptr)) {
+  //     view->axis_current->setRange(current_view->axis_current->min(),
+  //                                  current_view->axis_current->max());
+  //     view->axis_current->setTickCount(current_view->axis_current->tickCount());
+  //     view->axis_current->setLabelsColor(
+  //         current_view->axis_current->labelsColor());
+  //     view->axis_current->setLinePen(current_view->axis_current->linePen());
+  //     view->current_activ->setColor(current_view->current_activ->color());
+  //   }
 
-    if ((view->axis_sleep_current != nullptr) and
-        (current_view->axis_sleep_current != nullptr)) {
-      view->axis_sleep_current->setRange(
-          current_view->axis_sleep_current->min(),
-          current_view->axis_sleep_current->max());
-      view->axis_sleep_current->setTickCount(
-          current_view->axis_sleep_current->tickCount());
-      view->axis_sleep_current->setLabelsColor(
-          current_view->axis_sleep_current->labelsColor());
-      view->axis_sleep_current->setLinePen(
-          current_view->axis_sleep_current->linePen());
-      view->current_sleep->setColor(current_view->current_sleep->color());
-    }
+  //   if ((view->axis_sleep_current != nullptr) and
+  //       (current_view->axis_sleep_current != nullptr)) {
+  //     view->axis_sleep_current->setRange(
+  //         current_view->axis_sleep_current->min(),
+  //         current_view->axis_sleep_current->max());
+  //     view->axis_sleep_current->setTickCount(
+  //         current_view->axis_sleep_current->tickCount());
+  //     view->axis_sleep_current->setLabelsColor(
+  //         current_view->axis_sleep_current->labelsColor());
+  //     view->axis_sleep_current->setLinePen(
+  //         current_view->axis_sleep_current->linePen());
+  //     view->current_sleep->setColor(current_view->current_sleep->color());
+  //   }
 
-    if ((view->axis_voltage != nullptr) and
-        (current_view->axis_voltage != nullptr)) {
-      view->axis_voltage->setRange(current_view->axis_voltage->min(),
-                                   current_view->axis_voltage->max());
-      view->axis_voltage->setTickCount(current_view->axis_voltage->tickCount());
-      view->axis_voltage->setLabelsColor(
-          current_view->axis_voltage->labelsColor());
-      view->axis_voltage->setLinePen(current_view->axis_voltage->linePen());
-      view->voltage->setColor(current_view->voltage->color());
-    }
+  //   if ((view->axis_voltage != nullptr) and
+  //       (current_view->axis_voltage != nullptr)) {
+  //     view->axis_voltage->setRange(current_view->axis_voltage->min(),
+  //                                  current_view->axis_voltage->max());
+  //     view->axis_voltage->setTickCount(current_view->axis_voltage->tickCount());
+  //     view->axis_voltage->setLabelsColor(
+  //         current_view->axis_voltage->labelsColor());
+  //     view->axis_voltage->setLinePen(current_view->axis_voltage->linePen());
+  //     view->voltage->setColor(current_view->voltage->color());
+  //   }
 
-    if ((view->axis_force != nullptr) and
-        (current_view->axis_force != nullptr)) {
-      view->axis_force->setRange(current_view->axis_force->min(),
-                                 current_view->axis_force->max());
-      view->axis_force->setTickCount(current_view->axis_force->tickCount());
-      view->axis_force->setLabelsColor(current_view->axis_force->labelsColor());
-      view->axis_force->setLinePen(current_view->axis_force->linePen());
-      //            view->f ->setColor (current_view->voltage->color ());
-    }
+  //   if ((view->axis_force != nullptr) and
+  //       (current_view->axis_force != nullptr)) {
+  //     view->axis_force->setRange(current_view->axis_force->min(),
+  //                                current_view->axis_force->max());
+  //     view->axis_force->setTickCount(current_view->axis_force->tickCount());
+  //     view->axis_force->setLabelsColor(current_view->axis_force->labelsColor());
+  //     view->axis_force->setLinePen(current_view->axis_force->linePen());
+  //     //            view->f ->setColor (current_view->voltage->color ());
+  //   }
 
-    if ((view->axis_opmode != nullptr) and
-        (current_view->axis_opmode != nullptr)) {
-      view->axis_opmode->setRange(current_view->axis_opmode->min(),
-                                  current_view->axis_opmode->max());
-      view->axis_opmode->setLabelFormat(
-          current_view->axis_opmode->labelFormat());
-    }
+  //   if ((view->axis_opmode != nullptr) and
+  //       (current_view->axis_opmode != nullptr)) {
+  //     view->axis_opmode->setRange(current_view->axis_opmode->min(),
+  //                                 current_view->axis_opmode->max());
+  //     view->axis_opmode->setLabelFormat(
+  //         current_view->axis_opmode->labelFormat());
+  //   }
 
-    if ((view->axis_durability_signals != nullptr) and
-        (current_view->axis_durability_signals != nullptr)) {
-      view->axis_durability_signals->setRange(
-          current_view->axis_durability_signals->min(),
-          current_view->axis_durability_signals->max());
+  //   if ((view->axis_durability_signals != nullptr) and
+  //       (current_view->axis_durability_signals != nullptr)) {
+  //     view->axis_durability_signals->setRange(
+  //         current_view->axis_durability_signals->min(),
+  //         current_view->axis_durability_signals->max());
 
-      //            view->axis_durability_signals->setRange
-      //            (current_view->axis_durability_signals->min (),
-      //                                                     current_view->axis_durability_signals->max
-      //                                                     ());
-    }
+  //     //            view->axis_durability_signals->setRange
+  //     //            (current_view->axis_durability_signals->min (),
+  //     //                                                     current_view->axis_durability_signals->max
+  //     //                                                     ());
+  //   }
 
-    for (auto serie : view->m_chart->series()) {
+  //   for (auto serie : view->m_chart->series()) {
 
-      //            if(serie->name () == "Operating Mode") continue;
+  //     //            if(serie->name () == "Operating Mode") continue;
 
-      if (serie->name() == "")
-        continue;
+  //     if (serie->name() == "")
+  //       continue;
 
-      for (auto current_serie : current_view->m_chart->series()) {
+  //     for (auto current_serie : current_view->m_chart->series()) {
 
-        if (!current_serie->property("my_symbol").isValid())
-          continue;
-        if (current_serie->name() == "Operating Mode")
-          continue;
-        if (current_serie->property("my_symbol") == "")
-          continue;
+  //       if (!current_serie->property("my_symbol").isValid())
+  //         continue;
+  //       if (current_serie->name() == "Operating Mode")
+  //         continue;
+  //       if (current_serie->property("my_symbol") == "")
+  //         continue;
 
-        if (current_serie->name().section('(', 0, 0) ==
-            serie->name().section('(', 0, 0)) {
+  //       if (current_serie->name().section('(', 0, 0) ==
+  //           serie->name().section('(', 0, 0)) {
 
-          if (current_serie->isVisible() != serie->isVisible())
-            view->toggleLegendMarker(current_serie->name().section('(', 0, 0),
-                                     current_serie->isVisible());
+  //         if (current_serie->isVisible() != serie->isVisible())
+  //           view->toggleLegendMarker(current_serie->name().section('(', 0, 0),
+  //                                    current_serie->isVisible());
 
-          // qDebug() << serie->property ("my_symbol").isValid () <<
-          //             serie->property ("my_symbol") <<
-          //             current_serie->name ().section ('(', 0,0);
+  //         // qDebug() << serie->property ("my_symbol").isValid () <<
+  //         //             serie->property ("my_symbol") <<
+  //         //             current_serie->name ().section ('(', 0,0);
 
-          QColor color;
+  //         QColor color;
 
-          auto p_size = qobject_cast<QXYSeries *>(current_serie)
-                            ->brush()
-                            .textureImage()
-                            .size();
-          auto image =
-              qobject_cast<QXYSeries *>(current_serie)->brush().textureImage();
+  //         auto p_size = qobject_cast<QXYSeries *>(current_serie)
+  //                           ->brush()
+  //                           .textureImage()
+  //                           .size();
+  //         auto image =
+  //             qobject_cast<QXYSeries *>(current_serie)->brush().textureImage();
 
-          bool found = false;
-          for (int x = 0; x < p_size.width(); x++) {
-            for (int y = 0; y < p_size.height(); y++) {
-              if (image.pixelColor(x, y).alpha() == 255) {
-                //                            qDebug() << "tried to get color"
-                //                            << image.pixelColor (x, y) <<
-                //                            image.pixelColor (x, y).alpha ();
-                color = image.pixelColor(x, y);
-                found = true;
-                break;
-              }
-            }
-            if (found)
-              break;
-          }
+  //         bool found = false;
+  //         for (int x = 0; x < p_size.width(); x++) {
+  //           for (int y = 0; y < p_size.height(); y++) {
+  //             if (image.pixelColor(x, y).alpha() == 255) {
+  //               //                            qDebug() << "tried to get color"
+  //               //                            << image.pixelColor (x, y) <<
+  //               //                            image.pixelColor (x, y).alpha ();
+  //               color = image.pixelColor(x, y);
+  //               found = true;
+  //               break;
+  //             }
+  //           }
+  //           if (found)
+  //             break;
+  //         }
 
-          QString text = current_serie->property("my_symbol").toString();
-          int size = current_serie->property("my_symbol_size").toInt();
+  //         QString text = current_serie->property("my_symbol").toString();
+  //         int size = current_serie->property("my_symbol_size").toInt();
 
-          //                    qDebug() << serie->name () << text << size <<
-          //                    color;
+  //         //                    qDebug() << serie->name () << text << size <<
+  //         //                    color;
 
-          const auto mytest = text;
-          auto font = QFont("Arial", size, QFont::Bold);
-          auto fm = QFontMetrics(font);
-          auto rectangle = fm.boundingRect(text);
-          auto w = fm.horizontalAdvance(text);
-          auto h = rectangle.height();
-          //                    qDebug() << rectangle;
+  //         const auto mytest = text;
+  //         auto font = QFont("Arial", size, QFont::Bold);
+  //         auto fm = QFontMetrics(font);
+  //         auto rectangle = fm.boundingRect(text);
+  //         auto w = fm.horizontalAdvance(text);
+  //         auto h = rectangle.height();
+  //         //                    qDebug() << rectangle;
 
-          auto s = w > h ? w : h;
+  //         auto s = w > h ? w : h;
 
-          QImage star(s, s, QImage::Format_ARGB32);
-          star.fill(Qt::transparent);
-          QPainter painter(&star);
-          painter.setPen(color);
-          painter.setFont(font);
-          painter.drawText(star.rect(), Qt::AlignCenter, text);
-          painter.end();
+  //         QImage star(s, s, QImage::Format_ARGB32);
+  //         star.fill(Qt::transparent);
+  //         QPainter painter(&star);
+  //         painter.setPen(color);
+  //         painter.setFont(font);
+  //         painter.drawText(star.rect(), Qt::AlignCenter, text);
+  //         painter.end();
 
-          static_cast<QScatterSeries *>(serie)->setBrush(star);
-          static_cast<QScatterSeries *>(serie)->setPen(QColor(Qt::transparent));
+  //         static_cast<QScatterSeries *>(serie)->setBrush(star);
+  //         static_cast<QScatterSeries *>(serie)->setPen(QColor(Qt::transparent));
 
-          serie->setProperty("my_symbol", QVariant(text));
-          serie->setProperty("my_symbol_size", QVariant(size));
+  //         serie->setProperty("my_symbol", QVariant(text));
+  //         serie->setProperty("my_symbol_size", QVariant(size));
 
-          static_cast<QScatterSeries *>(serie)->setMarkerSize(s);
-        } else if (current_serie->name() == serie->name()) {
-        }
-      }
+  //         static_cast<QScatterSeries *>(serie)->setMarkerSize(s);
+  //       } else if (current_serie->name() == serie->name()) {
+  //       }
+  //     }
 
-      for (auto current_serie : current_view->m_chart->series()) {
+  //     for (auto current_serie : current_view->m_chart->series()) {
 
-        if (!current_serie->property("my_symbol").isValid()) {
+  //       if (!current_serie->property("my_symbol").isValid()) {
 
-          if (current_serie->name().section('(', 0, 0) ==
-              serie->name().section('(', 0, 0)) {
+  //         if (current_serie->name().section('(', 0, 0) ==
+  //             serie->name().section('(', 0, 0)) {
 
-            //                        qDebug() << "aiiiici" << serie->name () <<
-            //                        current_serie->name ();
+  //           //                        qDebug() << "aiiiici" << serie->name () <<
+  //           //                        current_serie->name ();
 
-            if (current_serie->isVisible() != serie->isVisible()) {
-              view->toggleLegendMarker(current_serie->name().section('(', 0, 0),
-                                       current_serie->isVisible());
-            }
+  //           if (current_serie->isVisible() != serie->isVisible()) {
+  //             view->toggleLegendMarker(current_serie->name().section('(', 0, 0),
+  //                                      current_serie->isVisible());
+  //           }
 
-            if (current_serie->name() == "Operating Mode") {
-              continue;
-            }
+  //           if (current_serie->name() == "Operating Mode") {
+  //             continue;
+  //           }
 
-            static_cast<QScatterSeries *>(serie)->setColor(
-                static_cast<QScatterSeries *>(current_serie)->color());
-          }
-        }
-      }
-    }
-  }
+  //           static_cast<QScatterSeries *>(serie)->setColor(
+  //               static_cast<QScatterSeries *>(current_serie)->color());
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 void MainWindow::current_NiceNumbers() {
@@ -1619,8 +1619,8 @@ void MainWindow::current_NamedSave() {
     auto graph = tab.at(1);
 
     View *view = qobject_cast<View *>(graph);
-    if (view->is_robot)
-      view->exportAction();
+    // if (view->is_robot)
+    //   view->exportAction();
 
     view->savePNG(view->serieName);
 
@@ -2351,30 +2351,30 @@ void MainWindow::on_actionDataManagerDialog_triggered() {
 }
 
 void MainWindow::on_actionsetZeroX_triggered() {
-  //
-  if (ui->tabWidget->currentWidget()->objectName() == "Statistics")
-    return;
+  // //
+  // if (ui->tabWidget->currentWidget()->objectName() == "Statistics")
+  //   return;
 
-  auto childs = ui->tabWidget->currentWidget()->children();
-  auto graph = childs.at(1);
-  View *view = qobject_cast<View *>(graph);
+  // auto childs = ui->tabWidget->currentWidget()->children();
+  // auto graph = childs.at(1);
+  // View *view = qobject_cast<View *>(graph);
 
-  qDebug() << "manual X set";
-  // return;
-  for (auto serie : view->m_chart->series()) {
-    auto XY_serie = qobject_cast<QXYSeries *>(serie);
-    auto offset = view->axis_travel->min();
-    qDebug() << "offset" << offset;
-    auto points_copy = XY_serie->points();
-    for (auto &point : points_copy) {
-      point.setX(point.x() - offset);
-    }
-    XY_serie->replace(points_copy);
-    for (auto haptic_point_name : view->data_loader->hapticPoints.keys()) {
-      // replace the point in the map
-      auto haptic_point = view->data_loader->hapticPoints[haptic_point_name];
-      haptic_point.setX(haptic_point.x() - offset);
-      view->data_loader->hapticPoints[haptic_point_name] = haptic_point;
-    }
-  }
+  // qDebug() << "manual X set";
+  // // return;
+  // for (auto serie : view->m_chart->series()) {
+  //   auto XY_serie = qobject_cast<QXYSeries *>(serie);
+  //   auto offset = view->axis_travel->min();
+  //   qDebug() << "offset" << offset;
+  //   auto points_copy = XY_serie->points();
+  //   for (auto &point : points_copy) {
+  //     point.setX(point.x() - offset);
+  //   }
+  //   XY_serie->replace(points_copy);
+  //   for (auto haptic_point_name : view->data_loader->hapticPoints.keys()) {
+  //     // replace the point in the map
+  //     auto haptic_point = view->data_loader->hapticPoints[haptic_point_name];
+  //     haptic_point.setX(haptic_point.x() - offset);
+  //     view->data_loader->hapticPoints[haptic_point_name] = haptic_point;
+  //   }
+  // }
 }

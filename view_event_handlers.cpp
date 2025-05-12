@@ -3,7 +3,6 @@
 
 extern bool calloutDragging;
 extern bool labViewEval;
-extern dataLoader *tempDataLoader;
 
 void View::handleParsingProgress(int percent, QString name)
 {
@@ -111,7 +110,7 @@ void View::handleOpMRangeChanged(qreal min, qreal max)
     Q_UNUSED(min)
     Q_UNUSED(max)
 
-    axis_opmode->setRange(0.9, 3.1);
+    // axis_opmode->setRange(0.9, 3.1);
 }
 
 void View::handleTime2RangeChanged(qreal min, qreal max)
@@ -1151,15 +1150,15 @@ void View::setScaleAxis(bool state) {
 
 void View::exportAction() {
 
-  if (this->is_durability) {
-    exportDurability();
-    return;
-  }
+  // if (this->is_durability) {
+  //   exportDurability();
+  //   return;
+  // }
 
-  if (this->is_robot) {
-    exportRobot();
-    return;
-  }
+  // if (this->is_robot) {
+  //   exportRobot();
+  //   return;
+  // }
 
   bool ok;
   QFileInfo fi(serieName);
@@ -1183,15 +1182,15 @@ void View::cutGraph(double start, double stop) {
 
     // qDebug() << "stop" << stop;
 
-    if ((temperature != nullptr) and temperature->points().size() > 5) {
+    // if ((temperature != nullptr) and temperature->points().size() > 5) {
 
-      if (stop > temperature->points().last().x())
-        stop = temperature->points().last().x();
-    } else if ((OM != nullptr) and (OM->points().size() > 1)) {
+    //   if (stop > temperature->points().last().x())
+    //     stop = temperature->points().last().x();
+    // } else if ((OM != nullptr) and (OM->points().size() > 1)) {
 
-      if (stop > OM->points().last().x())
-        stop = OM->points().last().x();
-    }
+    //   if (stop > OM->points().last().x())
+    //     stop = OM->points().last().x();
+    // }
 
     // qDebug() << "stop" << stop;
 
@@ -1639,18 +1638,18 @@ void View::handleMarkerClicked() {
       }
 
       //--> hide the corresponding normal MFU axis
-      if (marker->series()->name() == "Operating Mode")
-        axis_opmode->setVisible(false);
-      else if (marker->series()->name() == "Current sleep")
-        axis_sleep_current->setVisible(false);
-      else if (marker->series()->name() == "Current active")
-        axis_current->setVisible(false);
-      else if (marker->series()->name() == "Humidity")
-        axis_humidity->setVisible(false);
-      else if (marker->series()->name() == "Temperature")
-        axis_temperature->setVisible(false);
+      // if (marker->series()->name() == "Operating Mode")
+      //   axis_opmode->setVisible(false);
+      // else if (marker->series()->name() == "Current sleep")
+      //   axis_sleep_current->setVisible(false);
+      // else if (marker->series()->name() == "Current active")
+      //   axis_current->setVisible(false);
+      // else if (marker->series()->name() == "Humidity")
+      //   axis_humidity->setVisible(false);
+      // else if (marker->series()->name() == "Temperature")
+      //   axis_temperature->setVisible(false);
       //<--
-      else {
+      // else {
         //-->if this is the last MFU AS serie on axis, hide the axis
         bool voltage_visible = false;
         bool current_visible = false;
@@ -1663,12 +1662,12 @@ void View::handleMarkerClicked() {
             if (my_marker->series()->isVisible())
               voltage_visible = true;
         }
-        if (axis_current != nullptr)
-          axis_current->setVisible(current_visible);
-        if (axis_voltage != nullptr)
-          axis_voltage->setVisible(voltage_visible);
+        // if (axis_current != nullptr)
+        //   axis_current->setVisible(current_visible);
+        // if (axis_voltage != nullptr)
+        //   axis_voltage->setVisible(voltage_visible);
         //<--
-      }
+      // }
     } else // visible
     {
       // show callouts
@@ -1678,18 +1677,18 @@ void View::handleMarkerClicked() {
       }
 
       //--> show the corresponding normal MFU axis
-      if (marker->series()->name() == "Operating Mode")
-        axis_opmode->setVisible(true);
-      else if (marker->series()->name() == "Current sleep")
-        axis_sleep_current->setVisible(true);
-      else if (marker->series()->name() == "Current active")
-        axis_current->setVisible(true);
-      else if (marker->series()->name() == "Humidity")
-        axis_humidity->setVisible(true);
-      else if (marker->series()->name() == "Temperature")
-        axis_temperature->setVisible(true);
+      // if (marker->series()->name() == "Operating Mode")
+      //   axis_opmode->setVisible(true);
+      // else if (marker->series()->name() == "Current sleep")
+      //   axis_sleep_current->setVisible(true);
+      // else if (marker->series()->name() == "Current active")
+      //   axis_current->setVisible(true);
+      // else if (marker->series()->name() == "Humidity")
+      //   axis_humidity->setVisible(true);
+      // else if (marker->series()->name() == "Temperature")
+      //   axis_temperature->setVisible(true);
       //<--
-      else {
+      // else {
         //--> if any MFU AS serie is visible, show it's corresponding axis
         bool voltage_visible = false;
         bool current_visible = false;
@@ -1703,12 +1702,12 @@ void View::handleMarkerClicked() {
             if (my_marker->series()->isVisible())
               voltage_visible = true;
         }
-        if (axis_current != nullptr)
-          axis_current->setVisible(current_visible);
-        if (axis_voltage != nullptr)
-          axis_voltage->setVisible(voltage_visible);
+        // if (axis_current != nullptr)
+        //   axis_current->setVisible(current_visible);
+        // if (axis_voltage != nullptr)
+        //   axis_voltage->setVisible(voltage_visible);
         //<--
-      }
+      // }
     }
 
     updateCallouts();
@@ -1810,19 +1809,19 @@ void View::toggleLegendMarker(QString name, bool state) {
       callout->hide();
     }
 
-    //--> hide the corresponding normal MFU axis
-    if (marker->series()->name() == "Operating Mode")
-      axis_opmode->setVisible(false);
-    else if (marker->series()->name() == "Current sleep")
-      axis_sleep_current->setVisible(false);
-    else if (marker->series()->name() == "Current active")
-      axis_current->setVisible(false);
-    else if (marker->series()->name() == "Humidity")
-      axis_humidity->setVisible(false);
-    else if (marker->series()->name() == "Temperature")
-      axis_temperature->setVisible(false);
-    //<--
-    else {
+    // //--> hide the corresponding normal MFU axis
+    // if (marker->series()->name() == "Operating Mode")
+    //   axis_opmode->setVisible(false);
+    // else if (marker->series()->name() == "Current sleep")
+    //   axis_sleep_current->setVisible(false);
+    // else if (marker->series()->name() == "Current active")
+    //   axis_current->setVisible(false);
+    // else if (marker->series()->name() == "Humidity")
+    //   axis_humidity->setVisible(false);
+    // else if (marker->series()->name() == "Temperature")
+    //   axis_temperature->setVisible(false);
+    // //<--
+    // else {
       //-->if this is the last MFU AS serie on axis, hide the axis
       bool voltage_visible = false;
       bool current_visible = false;
@@ -1835,12 +1834,12 @@ void View::toggleLegendMarker(QString name, bool state) {
           if (my_marker->series()->isVisible())
             voltage_visible = true;
       }
-      if (axis_current != nullptr)
-        axis_current->setVisible(current_visible);
-      if (axis_voltage != nullptr)
-        axis_voltage->setVisible(voltage_visible);
+      // if (axis_current != nullptr)
+      //   axis_current->setVisible(current_visible);
+      // if (axis_voltage != nullptr)
+      //   axis_voltage->setVisible(voltage_visible);
       //<--
-    }
+    // }
   } else // visible
   {
     // show callouts
@@ -1848,19 +1847,19 @@ void View::toggleLegendMarker(QString name, bool state) {
       callout->show();
     }
 
-    //--> show the corresponding normal MFU axis
-    if (marker->series()->name() == "Operating Mode")
-      axis_opmode->setVisible(true);
-    else if (marker->series()->name() == "Current sleep")
-      axis_sleep_current->setVisible(true);
-    else if (marker->series()->name() == "Current active")
-      axis_current->setVisible(true);
-    else if (marker->series()->name() == "Humidity")
-      axis_humidity->setVisible(true);
-    else if (marker->series()->name() == "Temperature")
-      axis_temperature->setVisible(true);
-    //<--
-    else {
+    // //--> show the corresponding normal MFU axis
+    // if (marker->series()->name() == "Operating Mode")
+    //   axis_opmode->setVisible(true);
+    // else if (marker->series()->name() == "Current sleep")
+    //   axis_sleep_current->setVisible(true);
+    // else if (marker->series()->name() == "Current active")
+    //   axis_current->setVisible(true);
+    // else if (marker->series()->name() == "Humidity")
+    //   axis_humidity->setVisible(true);
+    // else if (marker->series()->name() == "Temperature")
+    //   axis_temperature->setVisible(true);
+    // //<--
+    // else {
       //--> if any MFU AS serie is visible, show it's corresponding axis
       bool voltage_visible = false;
       bool current_visible = false;
@@ -1874,12 +1873,12 @@ void View::toggleLegendMarker(QString name, bool state) {
           if (my_marker->series()->isVisible())
             voltage_visible = true;
       }
-      if (axis_current != nullptr)
-        axis_current->setVisible(current_visible);
-      if (axis_voltage != nullptr)
-        axis_voltage->setVisible(voltage_visible);
+      // if (axis_current != nullptr)
+      //   axis_current->setVisible(current_visible);
+      // if (axis_voltage != nullptr)
+      //   axis_voltage->setVisible(voltage_visible);
       //<--
-    }
+    // }
   }
 
   updateCallouts();
@@ -1910,88 +1909,88 @@ void View::handleMarkerToggle(QLegendMarker *marker) {
   //    QLegendMarker* marker = qobject_cast<QLegendMarker*> (sender());
   //    Q_ASSERT(marker);
 
-  switch (marker->type())
+  // switch (marker->type())
 
-  {
-  case QLegendMarker::LegendMarkerTypeXY: {
+  // {
+  // case QLegendMarker::LegendMarkerTypeXY: {
 
-    // Toggle visibility of series
-    marker->series()->setVisible(!marker->series()->isVisible());
+  //   // Toggle visibility of series
+  //   marker->series()->setVisible(!marker->series()->isVisible());
 
-    // Turn legend marker back to visible, since hiding series also hides the
-    // marker and we don't want it to happen now.
-    marker->setVisible(true);
+  //   // Turn legend marker back to visible, since hiding series also hides the
+  //   // marker and we don't want it to happen now.
+  //   marker->setVisible(true);
 
-    // Dim the marker, if series is not visible
-    qreal alpha = 1.0;
+  //   // Dim the marker, if series is not visible
+  //   qreal alpha = 1.0;
 
-    if (!marker->series()->isVisible()) {
+  //   if (!marker->series()->isVisible()) {
 
-      alpha = 0.5;
+  //     alpha = 0.5;
 
-      for (Callout *callout : intPoints[marker->series()->name()]) {
-        callout->hide();
-      }
+  //     for (Callout *callout : intPoints[marker->series()->name()]) {
+  //       callout->hide();
+  //     }
 
-      if (marker->series()->name() == "Operating Mode")
-        axis_opmode->setVisible(false);
-      else if (marker->series()->name() == "Current sleep")
-        axis_sleep_current->setVisible(false);
-      else if (marker->series()->name() == "Current active")
-        axis_current->setVisible(false);
-      else if (marker->series()->name() == "Humidity")
-        axis_humidity->setVisible(false);
-      else if (marker->series()->name() == "Temperature")
-        axis_temperature->setVisible(false);
-    } else {
-      for (Callout *callout : intPoints[marker->series()->name()]) {
-        callout->show();
-      }
+  //     if (marker->series()->name() == "Operating Mode")
+  //       axis_opmode->setVisible(false);
+  //     else if (marker->series()->name() == "Current sleep")
+  //       axis_sleep_current->setVisible(false);
+  //     else if (marker->series()->name() == "Current active")
+  //       axis_current->setVisible(false);
+  //     else if (marker->series()->name() == "Humidity")
+  //       axis_humidity->setVisible(false);
+  //     else if (marker->series()->name() == "Temperature")
+  //       axis_temperature->setVisible(false);
+  //   } else {
+  //     for (Callout *callout : intPoints[marker->series()->name()]) {
+  //       callout->show();
+  //     }
 
-      if (marker->series()->name() == "Operating Mode")
-        axis_opmode->setVisible(true);
-      else if (marker->series()->name() == "Current sleep")
-        axis_sleep_current->setVisible(true);
-      else if (marker->series()->name() == "Current active")
-        axis_current->setVisible(true);
-      else if (marker->series()->name() == "Humidity")
-        axis_humidity->setVisible(true);
-      else if (marker->series()->name() == "Temperature")
-        axis_temperature->setVisible(true);
-    }
+  //     if (marker->series()->name() == "Operating Mode")
+  //       axis_opmode->setVisible(true);
+  //     else if (marker->series()->name() == "Current sleep")
+  //       axis_sleep_current->setVisible(true);
+  //     else if (marker->series()->name() == "Current active")
+  //       axis_current->setVisible(true);
+  //     else if (marker->series()->name() == "Humidity")
+  //       axis_humidity->setVisible(true);
+  //     else if (marker->series()->name() == "Temperature")
+  //       axis_temperature->setVisible(true);
+  //   }
 
-    for (auto serie : m_chart->series()) {
-      if (serie->isVisible())
-        for (Callout *callout : intPoints[serie->name()])
-          callout->updateGeometry();
-    }
+  //   for (auto serie : m_chart->series()) {
+  //     if (serie->isVisible())
+  //       for (Callout *callout : intPoints[serie->name()])
+  //         callout->updateGeometry();
+  //   }
 
-    QColor color;
-    QBrush brush = marker->labelBrush();
-    color = brush.color();
-    color.setAlphaF(alpha);
-    brush.setColor(color);
-    marker->setLabelBrush(brush);
+  //   QColor color;
+  //   QBrush brush = marker->labelBrush();
+  //   color = brush.color();
+  //   color.setAlphaF(alpha);
+  //   brush.setColor(color);
+  //   marker->setLabelBrush(brush);
 
-    brush = marker->brush();
-    color = brush.color();
-    color.setAlphaF(alpha);
-    brush.setColor(color);
-    marker->setBrush(brush);
+  //   brush = marker->brush();
+  //   color = brush.color();
+  //   color.setAlphaF(alpha);
+  //   brush.setColor(color);
+  //   marker->setBrush(brush);
 
-    QPen pen = marker->pen();
-    color = pen.color();
-    color.setAlphaF(alpha);
-    pen.setColor(color);
-    marker->setPen(pen);
-    View::update();
-    break;
-  }
-  default: {
-    qDebug() << "Unknown marker type";
-    break;
-  }
-  }
+  //   QPen pen = marker->pen();
+  //   color = pen.color();
+  //   color.setAlphaF(alpha);
+  //   pen.setColor(color);
+  //   marker->setPen(pen);
+  //   View::update();
+  //   break;
+  // }
+  // default: {
+  //   qDebug() << "Unknown marker type";
+  //   break;
+  // }
+  // }
 }
 
 void View::savePNG(QString name) {
@@ -2344,41 +2343,41 @@ void View::adjustAxisRange(QValueAxis *axis) {
 }
 
 void View::actionOpmEdit() {
-  bool ok;
-  if (axis_opmode == nullptr)
-    return;
+  // bool ok;
+  // if (axis_opmode == nullptr)
+  //   return;
 
-  auto current_format = axis_opmode->labelFormat().split("|");
-  QString new_format = current_format.at(0);
+  // auto current_format = axis_opmode->labelFormat().split("|");
+  // QString new_format = current_format.at(0);
 
-  QString OpM_C =
-      QInputDialog::getText(this, tr("Change OpM Name"), tr("OpM C name:"),
-                            QLineEdit::Normal, current_format.at(1), &ok);
-  if (ok && !OpM_C.isEmpty())
-    new_format += "|" + OpM_C;
-  else
-    new_format += "|" + current_format.at(1);
+  // QString OpM_C =
+  //     QInputDialog::getText(this, tr("Change OpM Name"), tr("OpM C name:"),
+  //                           QLineEdit::Normal, current_format.at(1), &ok);
+  // if (ok && !OpM_C.isEmpty())
+  //   new_format += "|" + OpM_C;
+  // else
+  //   new_format += "|" + current_format.at(1);
 
-  QFileInfo fi(fileNameArg);
-  QString OpM_D =
-      QInputDialog::getText(this, tr("Change OpM Name"), tr("OpM D name:"),
-                            QLineEdit::Normal, current_format.at(2), &ok);
-  if (ok && !OpM_D.isEmpty())
-    new_format += "|" + OpM_D;
-  else
-    new_format += "|" + current_format.at(2);
+  // QFileInfo fi(fileNameArg);
+  // QString OpM_D =
+  //     QInputDialog::getText(this, tr("Change OpM Name"), tr("OpM D name:"),
+  //                           QLineEdit::Normal, current_format.at(2), &ok);
+  // if (ok && !OpM_D.isEmpty())
+  //   new_format += "|" + OpM_D;
+  // else
+  //   new_format += "|" + current_format.at(2);
 
-  QString OpM_E =
-      QInputDialog::getText(this, tr("Change OpM Name"), tr("OpM E name:"),
-                            QLineEdit::Normal, current_format.at(3), &ok);
-  if (ok && !OpM_E.isEmpty())
-    new_format += "|" + OpM_E;
-  else
-    new_format += "|" + current_format.at(3);
+  // QString OpM_E =
+  //     QInputDialog::getText(this, tr("Change OpM Name"), tr("OpM E name:"),
+  //                           QLineEdit::Normal, current_format.at(3), &ok);
+  // if (ok && !OpM_E.isEmpty())
+  //   new_format += "|" + OpM_E;
+  // else
+  //   new_format += "|" + current_format.at(3);
 
-  axis_opmode->setLabelFormat(new_format.toUtf8());
+  // axis_opmode->setLabelFormat(new_format.toUtf8());
 
-  emit propertyChanged();
+  // emit propertyChanged();
 }
 
 void View::actionTitleEdit() {

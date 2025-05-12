@@ -180,6 +180,13 @@ void View::resetView() {
   QApplication::processEvents();
 }
 
+// Implementation of pow10 function
+// This function calculates 10 raised to the power of x (10^x)
+double pow10(double x) {
+    return std::pow(10.0, x);
+}
+
+
 double View::niceTickRange(double range, int tickCount) {
   double unroundedTickSize = range / (tickCount - 1);
   double x = ceil(log10(unroundedTickSize) - 1);
