@@ -374,6 +374,7 @@ void View::constructDataChart() {
     auto axisFmt =
         this->data.DataManager->axisTypes.value(axesTable->item(row, 1)->text())
             .toUtf8();
+    qDebug() << "axisFmt" << axisFmt;
     auto celsius = QString::fromLatin1("°C").toUtf8();
     auto ohm = QString::fromLatin1("Ω").toUtf8();
     if (axisUnit == "°C")
@@ -463,7 +464,9 @@ void View::constructDataChart() {
 
         for (auto &message : *this->data.DBC) {
           for (auto &signal : message) {
-            if (fullName.contains(signal.name)) {
+            // Extract base name from fullName (before '(')
+            QString baseName = fullName.left(fullName.indexOf('('));
+            if (baseName == signal.name) {
               qDebug() << signal.name << channel
                        << signal.series->contains(channel.toUInt())
                        << signal.series->keys();

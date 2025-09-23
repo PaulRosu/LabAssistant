@@ -35,7 +35,7 @@
   <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
   <g
      id="g111"
-     style="fill:#ff5555">
+     style="fill:#6ceebe">
     <title
        id="title106">background</title>
     <rect
@@ -44,11 +44,11 @@
        width="132"
        height="132"
        id="canvas_background"
-       fill="#ff5555" />
+       fill="none" />
     <g
        id="canvasGrid"
        display="none"
-       style="fill:#ff5555">
+       style="fill:#6ceebe">
       <rect
          id="svg_1"
          width="100%"
@@ -57,25 +57,25 @@
          y="0"
          stroke-width="0"
          
-         style="fill:#ff5555" />
+         style="fill:#6ceebe" />
     </g>
   </g>
   <g
-     stroke="null"
+     stroke="#6ceebe"
      class="currentLayer"
      id="g130"
      transform="matrix(1.1212008,0,0,0.99642839,-15.578106,0.08583991)">
     <title
-       stroke="null"
+       stroke="#6ceebe"
        transform="translate(3.1640799045562744,126.48587799072266) scale(1.0332609415054321,1.03335440158844) translate(-3.1640799045562744,-126.48587799072266) translate(123.32359313964844,2.4789817333221436) scale(1.0160951614379883,1.0188287496566772) translate(-123.32359313964844,-2.4789817333221436) translate(1.1087557077407837,122.35737609863281) scale(1.0052800178527832,1.007920265197754) translate(-1.1087557077407837,-122.35737609863281) "
        id="title113">Layer 1</title>
     <g
-       stroke="null"
+       stroke="#6ceebe"
        id="svg_23"
        class=""
        transform="matrix(0.87128297,0,0,0.95555947,16.487637,5.7247943)">
       <polygon
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -84,7 +84,7 @@
          points="9.6280984,120.3296 128.09212,120.3296 9.6280984,120.3296 9.6280984,1.5616735 "
          id="svg_4" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -93,7 +93,7 @@
          d="M 1.16407,103.36843 H 9.6245 Z"
          id="svg_5" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -102,7 +102,7 @@
          d="M 1.16407,86.39823 H 9.6245 Z"
          id="svg_6" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -111,7 +111,7 @@
          d="M 1.16407,69.43345 H 9.6245 Z"
          id="svg_7" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -120,7 +120,7 @@
          d="M 1.16407,52.46325 H 9.6245 Z"
          id="svg_8" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -129,7 +129,7 @@
          d="M 1.16407,35.49666 H 9.6245 Z"
          id="svg_9" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -138,7 +138,7 @@
          d="M 1.16407,18.53007 H 9.6245 Z"
          id="svg_10" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -147,7 +147,7 @@
          d="m 26.55077,128.81922 v -8.4824 z"
          id="svg_11" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -156,7 +156,7 @@
          d="m 43.46982,128.81922 v -8.4824 z"
          id="svg_12" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -165,7 +165,7 @@
          d="m 60.39428,128.81922 v -8.4824 z"
          id="svg_13" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -174,7 +174,7 @@
          d="m 77.31694,128.81922 v -8.4824 z"
          id="svg_14" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"
@@ -183,7 +183,7 @@
          d="m 94.2414,128.81922 v -8.4824 z"
          id="svg_15" />
       <path
-         stroke="#000000"
+         stroke="#6ceebe"
          fill="none"
          stroke-width="2"
          stroke-linecap="round"

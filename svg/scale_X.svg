@@ -60,7 +60,7 @@
     <title
        id="title860">background</title>
     <rect
-       fill="#f0f0f0"
+       fill="none"
        id="canvas_background"
        height="130"
        width="130"
