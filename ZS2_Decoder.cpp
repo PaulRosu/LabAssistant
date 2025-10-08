@@ -793,16 +793,15 @@ void findInterestPoints(std::shared_ptr<MeasSpecimen> specimen,
   while (specimen->force.at(en) - specimen->force.at(st) < 0.15) // ** 0.5
   {
     // find a rising slope of at least 0.5N
-    if (en == (specimen->force.size() - 1)) {
-      en = en - 3;
+    if (en + 1 >= specimen->force.size()) {
+      en = std::max(0, en - 3);
       break;
     }
 
     if (specimen->force.at(en + 1) > specimen->force.at(en)) {
       // if rising, move the end of the range forward
       en++;
-    } else // reset the range ends at current position
-    {
+    } else { // reset the range ends at current position
       st = en;
       en += 1;
     }
@@ -823,7 +822,7 @@ void findInterestPoints(std::shared_ptr<MeasSpecimen> specimen,
   // *** find the left bound for the upper curve
   st = en; // start from the approaching distance
   en = st + 1;
-  while (specimen->force.at(st) <= specimen->force.at(en)) {
+  while (en + 1 < specimen->force.size() && specimen->force.at(st) <= specimen->force.at(en)) {
     // and move forward while the force is not falling
     en++;
     st++;
@@ -898,22 +897,35 @@ void findInterestPoints(std::shared_ptr<MeasSpecimen> specimen,
   // *** finf the right bound for the lower curve
   st = maxLInterestPointsForceLocation;
   en = maxLInterestPointsForceLocation + 1;
+  double maxindex = specimen->force.count();
+  qDebug() << " maxindex = " << maxindex;
+
+  // Iterate while the force is still decreasing,
+  // but stop immediately if we reach or exceed the valid range.
   while (specimen->force.at(st) > specimen->force.at(en)) {
-    en++;
-    st++;
+      if (en >= maxindex - 1) {  // guard against out-of-range access
+          qDebug() << "Reached end of force array, breaking loop.";
+          break;
+      }
+      en++;
+      st++;
   }
+
   int rightLowerBound = st - 3; // 15
   // ***
 
   // *** find the lower curve left bound
-  st = specimen->travel.size() - 1; // start from the vector end
+  st = specimen->travel.count() - 1; // start from the vector end
   en = st - 2;
 
   // optimizare claudius
   while ((abs(specimen->travel.at(st)) - specimen->travel.at(en)) < 0.05) {
+    if (st < 1) break;
     st--;
   }
   en = st - 2;
+  if (st < 0) st = 0;
+  if (en < 0) en = 0;
 
   while (specimen->force.at(en) - specimen->force.at(st) < 0.2) {
     if (en <= 1) {
@@ -1004,7 +1016,8 @@ void findInterestPoints(std::shared_ptr<MeasSpecimen> specimen,
       continue;
 
     // check if local convex peak
-    if (specimen->force.at(l) > specimen->force.at(l + 3) and
+    if (l >= 3 && l + 3 < specimen->force.size() &&
+        specimen->force.at(l) > specimen->force.at(l + 3) &&
         specimen->force.at(l) > specimen->force.at(l - 3)) {
 
       // choose the upper\lower radius
@@ -1115,7 +1128,8 @@ void findInterestPoints(std::shared_ptr<MeasSpecimen> specimen,
 
     // check if local concav peak, and apply the same startegy to find the
     // interest points
-    if (specimen->force.at(l) < specimen->force.at(l + 3) and
+    if (l >= 3 && l + 3 < specimen->force.size() &&
+        specimen->force.at(l) < specimen->force.at(l + 3) &&
         specimen->force.at(l) < specimen->force.at(l - 3)) // local concav peak
     {
 
@@ -1391,7 +1405,7 @@ void findInterestPoints(std::shared_ptr<MeasSpecimen> specimen,
       sw_1_state = (specimen->contact1.first() & 1) || (specimen->contact1.first() & 4);
       sw_2_state = (specimen->contact1.first() & 2) || (specimen->contact1.first() & 8);
 
-    for (uint l = 8; l < specimen->samples; l++) {
+    for (uint l = 8; l < std::min((uint)specimen->samples, (uint)specimen->contact1.size()); l++) {
 
       if (((specimen->contact1.at(l) & 1) || (specimen->contact1.at(l) & 4)) and
           !sw_1_state) {
